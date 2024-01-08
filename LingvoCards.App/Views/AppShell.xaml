@@ -1,0 +1,13 @@
+<Shell xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+       xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+       xmlns:views="clr-namespace:LingvoCards.App.Views"
+       x:Class="LingvoCards.App.Views.AppShell">
+
+    <FlyoutItem Title="View" Icon="icon_view.png">
+        <ShellContent ContentTemplate="{DataTemplate views:CardsPage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Practice" Icon="icon_practice.png">
+        <ShellContent ContentTemplate="{DataTemplate views:PracticePage}" />
+    </FlyoutItem>
+
+</Shell>

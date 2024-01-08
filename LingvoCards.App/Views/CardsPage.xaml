@@ -1,0 +1,140 @@
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:LingvoCards.App.ViewModels"
+             xmlns:helpers="clr-namespace:LingvoCards.App.Helpers"
+             xmlns:model="clr-namespace:LingvoCards.Domain.Model;assembly=LingvoCards.Domain"
+             x:Class="LingvoCards.App.Views.CardsPage"
+             Title="View/edit cards"
+             >
+
+    <ContentPage.Resources>
+        <!-- DataTemplateSelector for alternating row colors -->
+        <DataTemplate x:Key="EvenRowTemplate" x:DataType="model:Card">
+            <Grid BackgroundColor="LightGray">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Column borders -->
+                    <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="White" HorizontalOptions="End"/>
+                    <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="White" HorizontalOptions="End"/>
+                    <BoxView Grid.Column="2" WidthRequest="1" BackgroundColor="White" HorizontalOptions="End"/>
+                    <BoxView Grid.Column="3" WidthRequest="1" BackgroundColor="White" HorizontalOptions="End"/>
+
+                    <Label Grid.Column="0"  Margin="3" Text="{Binding Term}" />
+                    <Label Grid.Column="1"  Margin="3" Text="{Binding Description}" />
+                    <Label Grid.Column="2"  Margin="3" Text="{Binding CreatedOn, StringFormat='dd-MM-yy'}"/>
+                    <Label Grid.Column="3"  Margin="3" Text="{Binding SuccessCount}" />
+                    <Label Grid.Column="4"  Margin="3" Text="{Binding FailureCount}" />
+
+                </Grid>
+            </Grid>
+        </DataTemplate>
+
+        <DataTemplate x:Key="OddRowTemplate" x:DataType="model:Card">
+            <Grid BackgroundColor="White">
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="150"/>
+                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="100"/>
+
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Column borders -->
+                    <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                    <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                    <BoxView Grid.Column="2" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                    <BoxView Grid.Column="3" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+
+                    <Label Grid.Column="0"  Margin="3" Text="{Binding Term}" />
+                    <Label Grid.Column="1"  Margin="3" Text="{Binding Description}" />
+                    <Label Grid.Column="2"  Margin="3" Text="{Binding CreatedOn, StringFormat='dd-MM-yy'}"/>
+                    <Label Grid.Column="3"  Margin="3" Text="{Binding SuccessCount}" />
+                    <Label Grid.Column="4"  Margin="3" Text="{Binding FailureCount}" />
+
+                </Grid>
+            </Grid>
+        </DataTemplate>
+        <helpers:RowColorDataTemplateSelector x:Key="RowColorSelector"
+                                            EvenRowTemplate="{StaticResource EvenRowTemplate}"
+                                            OddRowTemplate="{StaticResource OddRowTemplate}" />
+    </ContentPage.Resources>
+
+
+    <ContentPage.BindingContext>
+        <viewModels:CardsViewModel/>
+    </ContentPage.BindingContext>
+
+    <Grid RowDefinitions="*, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
+
+        <!-- CollectionView for Displaying Cards -->
+        <Frame Padding="0" HasShadow="False" BorderColor="LightGray">
+            <CollectionView Grid.Row="0" 
+                            x:Name="CardsCollectionView" 
+                            ItemsSource="{Binding Cards}"
+                            ItemTemplate="{StaticResource RowColorSelector}">
+
+                <CollectionView.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="2*"/>
+                            <ColumnDefinition Width="150"/>
+                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="100"/>
+
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Column borders -->
+                        <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                        <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                        <BoxView Grid.Column="2" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                        <BoxView Grid.Column="3" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+
+                        <!-- Header labels -->
+                        <Label Grid.Column="0" Margin="3" Text="Word" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Grid.Column="1" Margin="3" Text="Description" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Grid.Column="2" Margin="3" Text="Date" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Grid.Column="3" Margin="3" Text="Ok" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Grid.Column="4" Margin="3" Text="Fail" FontAttributes="Bold" FontSize="Medium"/>
+
+
+                    </Grid>
+                </CollectionView.Header>
+            </CollectionView>
+        </Frame>
+        <!-- Bottom Section: Inputs and Buttons -->
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+
+            <Grid RowSpacing="10" ColumnSpacing="10">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <!-- For SearchBar -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- For Edit Button -->
+                    <ColumnDefinition Width="Auto"/>
+                    <!-- For Delete Button -->
+                </Grid.ColumnDefinitions>
+
+                <SearchBar Grid.Column="0" HorizontalOptions="FillAndExpand"/>
+                <Button Grid.Column="1" Text="Edit"/>
+                <Button Grid.Column="2" Text="Delete"/>
+            </Grid>
+
+            <Entry Placeholder="Word"/>
+            <Entry Placeholder="Description"/>
+            <Entry Placeholder="Tags"/>
+            <Button Text="✔️ Add/Edit"/>
+        </VerticalStackLayout>
+
+    </Grid>
+</ContentPage>
