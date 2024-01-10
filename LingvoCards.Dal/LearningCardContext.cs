@@ -5,8 +5,20 @@ namespace LingvoCards.Dal
 {
     public class LearningCardContext : DbContext
     {
+        public LearningCardContext()
+        {
+        }
+
+        public LearningCardContext(DbContextOptions<LearningCardContext> options)
+            : base(options)
+        {
+            Database.EnsureCreated();
+        }
+
         public DbSet<Card> Cards { get; set; }
         public DbSet<Tag> Tags { get; set; }
+
+
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -19,8 +31,7 @@ namespace LingvoCards.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            // Specify the SQLite database file
-            optionsBuilder.UseSqlite("Data Source=learningcards.db");
+            optionsBuilder.UseSqlite();
         }
     }
 }

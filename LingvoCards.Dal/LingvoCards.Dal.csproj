@@ -26,4 +26,10 @@
     <ProjectReference Include="..\LingvoCards.Domain\LingvoCards.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="learningcards.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

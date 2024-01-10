@@ -7,8 +7,8 @@ namespace LingvoCards.App
         public App()
         {
             InitializeComponent();
-
-            MainPage = new AppShell();
+            MainPage = new AppShell() { HeightRequest = 1000, WidthRequest = 800 };
         }
+
     }
 }
