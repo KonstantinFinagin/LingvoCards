@@ -11,6 +11,18 @@
         <!-- DataTemplateSelector for alternating row colors -->
         <DataTemplate x:Key="EvenRowTemplate" x:DataType="model:Card">
             <Grid BackgroundColor="LightGray">
+
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup>
+                        <VisualState Name="Normal"/>
+                        <VisualState Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="LightBlue"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -27,11 +39,11 @@
                     <BoxView Grid.Column="2" WidthRequest="1" BackgroundColor="White" HorizontalOptions="End"/>
                     <BoxView Grid.Column="3" WidthRequest="1" BackgroundColor="White" HorizontalOptions="End"/>
 
-                    <Label Grid.Column="0"  Margin="3" Text="{Binding Term}" />
-                    <Label Grid.Column="1"  Margin="3" Text="{Binding Description}" />
-                    <Label Grid.Column="2"  Margin="3" Text="{Binding CreatedOn, StringFormat='dd-MM-yy'}"/>
-                    <Label Grid.Column="3"  Margin="3" Text="{Binding SuccessCount}" />
-                    <Label Grid.Column="4"  Margin="3" Text="{Binding FailureCount}" />
+                    <Label Grid.Column="0"  Margin="5" Text="{Binding Term}" />
+                    <Label Grid.Column="1"  Margin="5" Text="{Binding Description}" />
+                    <Label Grid.Column="2"  Margin="5" Text="{Binding CreatedOn, StringFormat='{0:dd-MM-yy}'}"/>
+                    <Label Grid.Column="3"  Margin="5" Text="{Binding SuccessCount}" />
+                    <Label Grid.Column="4"  Margin="5" Text="{Binding FailureCount}" />
 
                 </Grid>
             </Grid>
@@ -39,6 +51,18 @@
 
         <DataTemplate x:Key="OddRowTemplate" x:DataType="model:Card">
             <Grid BackgroundColor="White">
+
+                <VisualStateManager.VisualStateGroups>
+                    <VisualStateGroup>
+                        <VisualState Name="Normal"/>
+                        <VisualState Name="Selected">
+                            <VisualState.Setters>
+                                <Setter Property="BackgroundColor" Value="LightBlue"/>
+                            </VisualState.Setters>
+                        </VisualState>
+                    </VisualStateGroup>
+                </VisualStateManager.VisualStateGroups>
+
                 <Grid>
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="*"/>
@@ -57,7 +81,7 @@
 
                     <Label Grid.Column="0"  Margin="5" Text="{Binding Term}" />
                     <Label Grid.Column="1"  Margin="5" Text="{Binding Description}" />
-                    <Label Grid.Column="2"  Margin="5" Text="{Binding CreatedOn, StringFormat='dd-MM-yy'}"/>
+                    <Label Grid.Column="2"  Margin="5" Text="{Binding CreatedOn, StringFormat='{0:dd-MM-yy}'}"/>
                     <Label Grid.Column="3"  Margin="5" Text="{Binding SuccessCount}" />
                     <Label Grid.Column="4"  Margin="5" Text="{Binding FailureCount}" />
 
@@ -76,7 +100,8 @@
             <CollectionView Grid.Row="0" 
                             x:Name="CardsCollectionView" 
                             ItemsSource="{Binding Cards}"
-                            ItemTemplate="{StaticResource RowColorSelector}">
+                            ItemTemplate="{StaticResource RowColorSelector}"
+                            SelectedItem="{Binding SelectedCard, Mode=TwoWay}">
 
                 <CollectionView.Header>
                     <Grid>
@@ -120,7 +145,7 @@
                     <!-- For Delete Button -->
                 </Grid.ColumnDefinitions>
 
-                <SearchBar Grid.Column="0" HorizontalOptions="FillAndExpand"/>
+                <SearchBar Grid.Column="0" HorizontalOptions="FillAndExpand" Text="{Binding SearchTerm, Mode=TwoWay}"/>
                 <Button Grid.Column="1" Text="Edit"/>
                 <Button Grid.Column="2" Text="Delete"/>
             </Grid>
@@ -128,7 +153,7 @@
             <Entry Placeholder="Word" Text="{Binding EditableTerm, Mode=TwoWay}"/>
             <Entry Placeholder="Description" Text="{Binding EditableDescription, Mode=TwoWay}"/>
             <Entry Placeholder="Tags" Text="{Binding EditableTags, Mode=TwoWay}"/>
-            <Button Text="✔️ Add/Edit" Command="{Binding SaveCommand}"/>
+            <Button Text="✔️ Add/Edit" Command="{Binding SaveCardCommand}"/>
         </VerticalStackLayout>
 
     </Grid>

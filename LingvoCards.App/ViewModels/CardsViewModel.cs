@@ -1,15 +1,14 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows.Input;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
 using LingvoCards.Dal.Repositories;
 using LingvoCards.Domain.Model;
 
 namespace LingvoCards.App.ViewModels
 {
-    public class CardsViewModel : BindableObject
+    public partial class CardsViewModel : ObservableObject
     {
-        private ObservableCollection<Card> _cards;
-        private string _searchTerm;
-        private Card? _selectedCard;
         private readonly CardRepository _cardRepository;
 
         public CardsViewModel(CardRepository cardRepository)
@@ -18,66 +17,47 @@ namespace LingvoCards.App.ViewModels
             UpdateAllCards();
         }
 
+        [ObservableProperty]
+        private ObservableCollection<Card> _cards = new();
+
+        [ObservableProperty]
+        private string? _searchTerm;
+
+        partial void OnSearchTermChanged(string value)
+        {
+            PerformSearch();
+        }
+
+        [ObservableProperty]
+        private Card? _selectedCard;
+
+        partial void OnSelectedCardChanged(Card? value)
+        {
+            EditableTerm = value?.Term;
+            EditableDescription = value?.Description;
+        }
+
+        [ObservableProperty]
+        private string? _editableTerm;
+
+        [ObservableProperty] 
+        private string? _editableDescription;
+
+        [ObservableProperty] 
+        private string? _editableTags;
+
         private void UpdateAllCards()
         {
             var allCards = _cardRepository.GetAll();
-
-            foreach (var card in allCards)
-            {
-                Cards.Add(card);
-            }
+            Cards = new ObservableCollection<Card>(allCards);
         }
 
-        public ObservableCollection<Card> Cards
-        {
-            get => _cards;
-            set
-            {
-                _cards = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public string SearchTerm
-        {
-            get => _searchTerm;
-            set
-            {
-                _searchTerm = value;
-                OnPropertyChanged();
-                PerformSearch();
-            }
-        }
-
-        public string EditableTerm { get; set; }
-        public string EditableDescription { get; set; }
-        public string EditableTags { get; set; }
-
-        public Card? SelectedCard
-        {
-            get => _selectedCard;
-            set
-            {
-                _selectedCard = value;
-                OnPropertyChanged();
-
-                // Update the editable fields with the selected card details
-                // Assuming you have properties like EditableTerm, EditableDescription, etc.
-                EditableTerm = _selectedCard?.Term;
-                EditableDescription = _selectedCard?.Description;
-                // ... other fields ...
-            }
-        }
-
-        // Command to save changes
-        public ICommand SaveCommand => new Command(SaveCard);
-
+        [RelayCommand]
         private void SaveCard()
         {
             if (SelectedCard == null)
             {
                 // add new card
-
                 _cardRepository.Add(new Card()
                 {
                     Id = Guid.NewGuid(),
@@ -91,6 +71,7 @@ namespace LingvoCards.App.ViewModels
                 UpdateAllCards();
                 return;
             }
+
             else
             {
                 // Update the selected card with editable fields
@@ -100,21 +81,13 @@ namespace LingvoCards.App.ViewModels
 
                 _cardRepository.Update(SelectedCard); // Save changes to the database
             }
-
         }
 
         private void PerformSearch()
         {
-            if (string.IsNullOrWhiteSpace(_searchTerm))
-            {
-                // Reset search
-                Cards = new ObservableCollection<Card>(_cards);
-            }
-            else
-            {
-                // Perform search
-                Cards = new ObservableCollection<Card>(_cards.Where(c => c.Term.Contains(_searchTerm) || c.Description.Contains(_searchTerm)));
-            }
+            Cards = string.IsNullOrEmpty(SearchTerm)
+                ? new ObservableCollection<Card>(_cardRepository.GetAll())
+                : new ObservableCollection<Card>(_cardRepository.GetByTermOrDescription(SearchTerm));
         }
     }
 }

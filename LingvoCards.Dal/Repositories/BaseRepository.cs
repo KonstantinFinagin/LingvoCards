@@ -5,26 +5,26 @@ namespace LingvoCards.Dal.Repositories;
 public class BaseRepository<T>(DbContext context) : IRepository<T>
     where T : class
 {
-    private readonly DbSet<T> _dbSet = context.Set<T>();
+    protected readonly DbSet<T> DbSet = context.Set<T>();
 
     public IEnumerable<T> GetAll()
     {
-        return _dbSet.ToList();
+        return DbSet.ToList();
     }
 
     public T? GetById(Guid id)
     {
-        return _dbSet.Find(id);
+        return DbSet.Find(id);
     }
 
     public void Add(T entity)
     {
-        _dbSet.Add(entity);
+        DbSet.Add(entity);
     }
 
     public void Update(T entity)
     {
-        _dbSet.Attach(entity);
+        DbSet.Attach(entity);
         context.Entry(entity).State = EntityState.Modified;
     }
 
@@ -32,9 +32,9 @@ public class BaseRepository<T>(DbContext context) : IRepository<T>
     {
         if (context.Entry(entity).State == EntityState.Detached)
         {
-            _dbSet.Attach(entity);
+            DbSet.Attach(entity);
         }
-        _dbSet.Remove(entity);
+        DbSet.Remove(entity);
     }
 
     public void SaveChanges()
