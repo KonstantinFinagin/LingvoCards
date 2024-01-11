@@ -31,7 +31,7 @@ namespace LingvoCards.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite();
+            optionsBuilder.UseSqlite("Data Source=learningcards.db");
         }
     }
 }

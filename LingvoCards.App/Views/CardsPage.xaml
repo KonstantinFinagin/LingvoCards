@@ -10,14 +10,14 @@
     <ContentPage.Resources>
         <!-- DataTemplateSelector for alternating row colors -->
         <DataTemplate x:Key="EvenRowTemplate" x:DataType="model:Card">
-            <Grid BackgroundColor="LightGray">
+            <Grid BackgroundColor="#f0f0f0">
 
                 <VisualStateManager.VisualStateGroups>
                     <VisualStateGroup>
                         <VisualState Name="Normal"/>
                         <VisualState Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="LightBlue"/>
+                                <Setter Property="BackgroundColor" Value="{StaticResource Secondary}"/>
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -25,9 +25,9 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="60"/>
 
@@ -57,7 +57,7 @@
                         <VisualState Name="Normal"/>
                         <VisualState Name="Selected">
                             <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="LightBlue"/>
+                                <Setter Property="BackgroundColor" Value="{StaticResource Secondary}"/>
                             </VisualState.Setters>
                         </VisualState>
                     </VisualStateGroup>
@@ -65,9 +65,9 @@
 
                 <Grid>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="100"/>
+                        <ColumnDefinition Width="3*"/>
+                        <ColumnDefinition Width="70"/>
                         <ColumnDefinition Width="60"/>
                         <ColumnDefinition Width="60"/>
 
@@ -101,14 +101,15 @@
                             x:Name="CardsCollectionView" 
                             ItemsSource="{Binding Cards}"
                             ItemTemplate="{StaticResource RowColorSelector}"
+                            SelectionMode="Single"
                             SelectedItem="{Binding SelectedCard, Mode=TwoWay}">
 
                 <CollectionView.Header>
                     <Grid>
                         <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="*"/>
                             <ColumnDefinition Width="2*"/>
-                            <ColumnDefinition Width="100"/>
+                            <ColumnDefinition Width="3*"/>
+                            <ColumnDefinition Width="70"/>
                             <ColumnDefinition Width="60"/>
                             <ColumnDefinition Width="60"/>
 
@@ -135,25 +136,44 @@
         <!-- Bottom Section: Inputs and Buttons -->
         <VerticalStackLayout Grid.Row="1" Spacing="10">
 
-            <Grid RowSpacing="10" ColumnSpacing="10">
+            <Grid>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <!-- For SearchBar -->
                     <ColumnDefinition Width="Auto"/>
-                    <!-- For Edit Button -->
                     <ColumnDefinition Width="Auto"/>
-                    <!-- For Delete Button -->
                 </Grid.ColumnDefinitions>
 
-                <SearchBar Grid.Column="0" HorizontalOptions="FillAndExpand" Text="{Binding SearchTerm, Mode=TwoWay}"/>
-                <Button Grid.Column="1" Text="Edit"/>
-                <Button Grid.Column="2" Text="Delete"/>
+                <SearchBar Text="{Binding SearchTerm, Mode=TwoWay}"/>
+                <Button Grid.Column="1" Text="Clear Selected" Command="{Binding ClearSelectionCommand}" IsVisible="{Binding IsClearSelectionVisible}" Margin="10,0,0,0"/>
+                <Button Grid.Column="2" Text="Delete" Command="{Binding DeleteCardCommand}" IsVisible="{Binding IsDeleteVisible}" Margin="10,0,0,0"/>
+
             </Grid>
 
             <Entry Placeholder="Word" Text="{Binding EditableTerm, Mode=TwoWay}"/>
             <Entry Placeholder="Description" Text="{Binding EditableDescription, Mode=TwoWay}"/>
-            <Entry Placeholder="Tags" Text="{Binding EditableTags, Mode=TwoWay}"/>
-            <Button Text="✔️ Add/Edit" Command="{Binding SaveCardCommand}"/>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Entry Grid.Column="0" Placeholder="Tags" Text="{Binding EditableTags, Mode=OneWay}" />
+                <Button Grid.Column="1" Text="Select Tags" Command="{Binding SelectTagsCommand}" Margin="10,0,0,0"/>
+            </Grid>
+
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button Grid.Column="1" Text="Add new" Command="{Binding AddCardCommand}" IsVisible="{Binding IsAddNewVisible}" Margin="10,0,0,0"/>
+                <Button Grid.Column="2" Text="Edit selected" Command="{Binding EditCardCommand}" IsVisible="{Binding IsEditVisible}" Margin="10,0,0,0"/>
+
+            </Grid>
+
         </VerticalStackLayout>
 
     </Grid>

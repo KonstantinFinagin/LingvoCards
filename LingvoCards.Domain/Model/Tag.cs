@@ -7,9 +7,9 @@ public class Tag
 {
     public Guid Id { get; set; }
 
-    public string TagText { get; set; }
+    public string Text { get; set; }
 
-    public string Description { get; set; }
+    public bool IsDefault { get; set; }
 
     public IEnumerable<Card> Cards { get; set; }
 }
