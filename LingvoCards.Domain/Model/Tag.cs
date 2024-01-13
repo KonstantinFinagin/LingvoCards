@@ -1,4 +1,6 @@
-﻿namespace LingvoCards.Domain.Model;
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace LingvoCards.Domain.Model;
 
 /// <summary>
 ///     Tag for grouping and searching cards
@@ -12,4 +14,7 @@ public class Tag
     public bool IsDefault { get; set; }
 
     public IEnumerable<Card> Cards { get; set; }
+
+    [NotMapped]
+    public bool IsSelected { get; set; }
 }

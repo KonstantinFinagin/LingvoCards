@@ -145,12 +145,21 @@
                 </Grid.ColumnDefinitions>
 
                 <SearchBar Text="{Binding SearchTerm, Mode=TwoWay}"/>
-                <Button Grid.Column="2" Text="Delete" Command="{Binding DeleteCardCommand}" IsVisible="{Binding IsDeleteVisible}" Margin="10,0,0,0"/>
+                <Button Grid.Column="2" BackgroundColor="PaleVioletRed" Text="Delete" Command="{Binding DeleteCardCommand}" IsVisible="{Binding IsDeleteVisible}" Margin="10,0,0,0"/>
 
             </Grid>
 
-            <Entry Placeholder="Word" Text="{Binding EditableTerm, Mode=TwoWay}"/>
-            <Entry Placeholder="Description" Text="{Binding EditableDescription, Mode=TwoWay}"/>
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="2*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                    <ColumnDefinition Width="3*"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Entry Grid.Column="0" Placeholder="Word" Text="{Binding EditableTerm, Mode=TwoWay}"/>
+                <Entry Grid.Column="2" Placeholder="Description" Text="{Binding EditableDescription, Mode=TwoWay}" Margin="10,0,0,0"/>
+            </Grid>
+
             <Entry Placeholder="Tags" Text="{Binding EditableTags, Mode=OneWay}" />
 
             <Grid>

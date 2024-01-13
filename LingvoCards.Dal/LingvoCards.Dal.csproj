@@ -28,7 +28,7 @@
 
   <ItemGroup>
     <None Update="learningcards.db">
-      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
 

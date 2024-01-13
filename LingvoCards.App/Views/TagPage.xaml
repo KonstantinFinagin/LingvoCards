@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:model="clr-namespace:LingvoCards.Domain.Model;assembly=LingvoCards.Domain"
+             x:Class="LingvoCards.App.Views.TagPage"
+             Title="Select Tags">
+    <Grid RowDefinitions="*, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
+        <Frame Padding="0" HasShadow="False" BorderColor="LightGray">
+
+
+            <CollectionView x:Name="TagsCollectionView"
+                        ItemsSource="{Binding AvailableTags}"
+                        SelectionMode="None">
+
+                <CollectionView.Header>
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+                            <ColumnDefinition Width="*"/>
+
+                        </Grid.ColumnDefinitions>
+
+                        <!-- Column borders -->
+                        <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                        <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+
+                        <!-- Header labels -->
+                        <Label Grid.Column="0" Margin="5" Text="Tag" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Grid.Column="1" Margin="5" Text="Is Default" FontAttributes="Bold" FontSize="Medium"/>
+                        <Label Grid.Column="2" Margin="5" Text="Is Selected" FontAttributes="Bold" FontSize="Medium"/>
+
+                    </Grid>
+                </CollectionView.Header>
+
+                <!-- Define the DataTemplate for displaying each tag -->
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Tag">
+
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Column borders -->
+                            <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                            <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+
+                            <!-- Header labels -->
+                            <Label Grid.Column="0" Margin="5" Text="{Binding Text}" />
+                            <CheckBox Grid.Column="1" Margin="5" IsChecked="{Binding IsDefault, Mode=TwoWay}"/>
+                            <CheckBox Grid.Column="2" Margin="5" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+
+                        </Grid>
+
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+            </CollectionView>
+
+        </Frame>
+
+        <!--Bottom section-->
+        <VerticalStackLayout Grid.Row="1" Spacing="10">
+            <!--Add new tag-->
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Entry Grid.Column="0" Placeholder="New Tag" Text="{Binding NewTagText, Mode=TwoWay}"/>
+                <Button Grid.Column="1" Text="Add" Margin="10,0,0,0" Command="{Binding AddTag}"/>
+
+            </Grid>
+
+            <!--Apply and save defaults-->
+            <Grid HorizontalOptions="End">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <Button BackgroundColor="PaleVioletRed" Grid.Column="0" Text="Delete selected" Command="{Binding DeleteSelectedCommand}"/>
+                <Button Grid.Column="1" Text="Save Tags" Margin="10,0,0,0"  Command="{Binding SetDefaultsCommand}"/>
+                <Button Grid.Column="2" Text="Apply selected to card" Margin="10,0,0,0" Command="{Binding ApplyCommand}"/>
+
+            </Grid>
+        </VerticalStackLayout>
+
+
+    </Grid>
+</ContentPage>

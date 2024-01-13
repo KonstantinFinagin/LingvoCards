@@ -12,13 +12,12 @@ namespace LingvoCards.Dal
         public LearningCardContext(DbContextOptions<LearningCardContext> options)
             : base(options)
         {
-            Database.EnsureCreated();
+            // migration is performed in the AppData\Local\Packages\com.companyname.lingvocards.app_... folder
+            Database.Migrate();
         }
 
         public DbSet<Card> Cards { get; set; }
         public DbSet<Tag> Tags { get; set; }
-
-
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -31,7 +30,10 @@ namespace LingvoCards.Dal
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlite("Data Source=learningcards.db");
+            if (!optionsBuilder.IsConfigured)
+            {
+                optionsBuilder.UseSqlite($"Filename=lingvocards.db");
+            }
         }
     }
 }

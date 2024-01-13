@@ -22,13 +22,15 @@ namespace LingvoCards.App
             // Register DbContext
             builder.Services.AddDbContext<LearningCardContext>(options =>
             {
-                options.UseSqlite($"Filename={GetDatabasePath()}", x => x.MigrationsAssembly(nameof(LearningCardContext)));
+                options.UseSqlite($"Filename={GetDatabasePath()}", x => x.MigrationsAssembly(typeof(LearningCardContext).Assembly.FullName));
             });
 
             // Register repositories
             builder.Services.AddScoped<CardRepository>();
+            builder.Services.AddScoped<TagRepository>();
 
-            builder.Services.AddSingleton<CardsViewModel>();
+            builder.Services.AddScoped<CardsViewModel>();
+            builder.Services.AddScoped<TagViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

@@ -1,5 +1,4 @@
 using LingvoCards.App.ViewModels;
-using LingvoCards.Domain.Model;
 
 namespace LingvoCards.App.Views;
 

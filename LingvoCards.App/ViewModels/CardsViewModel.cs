@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
-using System.Windows.Input;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
+using LingvoCards.App.Views;
 using LingvoCards.Dal.Repositories;
 using LingvoCards.Domain.Model;
 
@@ -9,11 +9,13 @@ namespace LingvoCards.App.ViewModels
 {
     public partial class CardsViewModel : ObservableObject
     {
+        private readonly IServiceProvider _serviceProvider;
         private readonly CardRepository _cardRepository;
 
-        public CardsViewModel(CardRepository cardRepository)
+        public CardsViewModel(CardRepository cardRepository, IServiceProvider serviceProvider)
         {
             _cardRepository = cardRepository;
+            _serviceProvider = serviceProvider;
             UpdateAllCards();
         }
 
@@ -119,9 +121,16 @@ namespace LingvoCards.App.ViewModels
         }
 
         [RelayCommand]
-        private void DeleteCard()
+        private async Task DeleteCard()
         {
+
             if (SelectedCard == null)
+            {
+                return;
+            }
+            
+            var deletionApproved = await Shell.Current.CurrentPage.DisplayAlert("Delete", "Delete selected?", "Delete", "Cancel");
+            if (!deletionApproved)
             {
                 return;
             }
@@ -130,6 +139,16 @@ namespace LingvoCards.App.ViewModels
             _cardRepository.SaveChanges();
             SelectedCard = null;
             UpdateAllCards();
+        }
+
+        [RelayCommand]
+        private async Task SelectTags()
+        {
+            var tagViewModel = _serviceProvider.GetService<TagViewModel>();
+
+
+            var tagSelectionPage = new TagPage() {BindingContext = tagViewModel };
+            await Application.Current.MainPage.Navigation.PushModalAsync(tagSelectionPage);
         }
 
         private void UpdateButtonVisibility()
@@ -196,8 +215,8 @@ namespace LingvoCards.App.ViewModels
             Cards = string.IsNullOrEmpty(SearchTerm)
                 ? new ObservableCollection<Card>(_cardRepository.GetAll())
                 : new ObservableCollection<Card>(_cardRepository.GetByTermOrDescription(SearchTerm));
-
-            SelectedCard = Cards.Count == 1 ? Cards.First() : null;
+            
+            SelectedCard = null;
         }
 
 
