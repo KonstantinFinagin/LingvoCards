@@ -13,7 +13,7 @@ public class Tag
 
     public bool IsDefault { get; set; }
 
-    public IEnumerable<Card> Cards { get; set; }
+    public virtual ICollection<Card> Cards { get; set; }
 
     [NotMapped]
     public bool IsSelected { get; set; }

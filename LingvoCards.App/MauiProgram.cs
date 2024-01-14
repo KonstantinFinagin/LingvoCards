@@ -25,11 +25,13 @@ namespace LingvoCards.App
                 options.UseSqlite($"Filename={GetDatabasePath()}", x => x.MigrationsAssembly(typeof(LearningCardContext).Assembly.FullName));
             });
 
-            // Register repositories
+            // Register Repositories
             builder.Services.AddScoped<CardRepository>();
             builder.Services.AddScoped<TagRepository>();
 
+            // Register View Models
             builder.Services.AddScoped<CardsViewModel>();
+            builder.Services.AddScoped<CardTagViewModel>();
             builder.Services.AddScoped<TagViewModel>();
 
 #if DEBUG

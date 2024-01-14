@@ -11,24 +11,13 @@ namespace LingvoCards.App.ViewModels
         private readonly TagRepository _tagRepository;
 
         [ObservableProperty] 
-        private ObservableCollection<Tag> _availableTags;
+        private ObservableCollection<Tag> _availableTags = new();
 
         [ObservableProperty]
-        private Card _selectedCard;
+        private Tag? _selectedTag;
 
         [ObservableProperty]
         private string _newTagText;
-
-        partial void OnSelectedCardChanging(Card value)
-        {
-            foreach (var availableTag in AvailableTags)
-            {
-                if (value.Tags.Select(t => t.Id).Contains(availableTag.Id))
-                {
-                    availableTag.IsSelected = true;
-                }
-            }
-        }
 
         public TagViewModel(TagRepository tagRepository)
         {
@@ -36,24 +25,20 @@ namespace LingvoCards.App.ViewModels
             LoadTags();
         }
 
-        public void InitializeWithSelectedCard(Card selectedCard)
-        {
-            SelectedCard = selectedCard;
-        }
-
         private void LoadTags()
         {
             var tags = _tagRepository.GetAll();
-
-            foreach (var tag in tags)
-            {
-                AvailableTags.Add(tag);    
-            }
+            AvailableTags = new ObservableCollection<Tag>(tags);
         }
 
         [RelayCommand]
         private void AddTag()
         {
+            if (string.IsNullOrEmpty(NewTagText))
+            {
+                return;
+            }
+
             var tag = new Tag()
             {
                 Id = Guid.NewGuid(),
@@ -64,14 +49,63 @@ namespace LingvoCards.App.ViewModels
             _tagRepository.Add(tag);
             _tagRepository.SaveChanges();
 
+            NewTagText = string.Empty;
+
+            LoadTags();
+        }
+
+
+        [RelayCommand]
+        private async Task DeleteSelected()
+        {
+            if (SelectedTag == null)
+            {
+                return;
+            }
+
+            var deletionApproved = await Shell.Current.CurrentPage.DisplayAlert("Delete", $"Delete {SelectedTag.Text}?", "Delete", "Cancel");
+            if (!deletionApproved)
+            {
+                return;
+            }
+
+            _tagRepository.Remove(SelectedTag);
+            _tagRepository.SaveChanges();
+
+            LoadTags();
+        }
+
+
+        [RelayCommand]
+        private async Task SaveDefaults()
+        {
+            var saveApproved = await Shell.Current.CurrentPage.DisplayAlert("Save new defaults", "Save new defaults", "Save", "Cancel");
+            if (!saveApproved)
+            {
+                return;
+            }
+
+            foreach (var availableTag in AvailableTags)
+            {
+                _tagRepository.Update(availableTag);
+            }
+
+            _tagRepository.SaveChanges();
+
             LoadTags();
         }
 
         [RelayCommand]
-        private void Apply()
+        private async Task Dismiss()
         {
-            // Logic to apply the selected tags
+            await ReturnToCardPage();
         }
+
+        private async Task ReturnToCardPage()
+        {
+            await Application.Current.MainPage.Navigation.PopModalAsync();
+        }
+
     }
 }
 

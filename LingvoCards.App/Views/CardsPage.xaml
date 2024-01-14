@@ -129,7 +129,6 @@
                         <Label Grid.Column="3" Margin="5" Text="Ok" FontAttributes="Bold" FontSize="Medium"/>
                         <Label Grid.Column="4" Margin="5" Text="Fail" FontAttributes="Bold" FontSize="Medium"/>
 
-
                     </Grid>
                 </CollectionView.Header>
             </CollectionView>
@@ -145,7 +144,7 @@
                 </Grid.ColumnDefinitions>
 
                 <SearchBar Text="{Binding SearchTerm, Mode=TwoWay}"/>
-                <Button Grid.Column="2" BackgroundColor="PaleVioletRed" Text="Delete" Command="{Binding DeleteCardCommand}" IsVisible="{Binding IsDeleteVisible}" Margin="10,0,0,0"/>
+                <Button Grid.Column="2" BackgroundColor="PaleVioletRed" Text="Delete" Command="{Binding DeleteCardCommand}" IsVisible="{Binding IsCardSelected}" Margin="10,0,0,0"/>
 
             </Grid>
 
@@ -160,7 +159,15 @@
                 <Entry Grid.Column="2" Placeholder="Description" Text="{Binding EditableDescription, Mode=TwoWay}" Margin="10,0,0,0"/>
             </Grid>
 
-            <Entry Placeholder="Tags" Text="{Binding EditableTags, Mode=OneWay}" />
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"></ColumnDefinition>
+                    <ColumnDefinition Width="Auto"></ColumnDefinition>
+                </Grid.ColumnDefinitions>
+
+                <Entry Placeholder="Tags" Text="{Binding SelectedCard.FormattedTags, Mode=OneWay}" />
+                <Button Grid.Column="1" Text="Select tags" Command="{Binding SelectTagsCommand}" IsVisible="{Binding IsCardSelected}" Margin="10,0,0,0"/>
+            </Grid>
 
             <Grid>
                 <Grid.ColumnDefinitions>
@@ -172,8 +179,7 @@
 
                 <Button Grid.Column="1" Text="Add new" Command="{Binding AddCardCommand}" IsVisible="{Binding IsAddNewVisible}" Margin="10,0,0,0"/>
                 <Button Grid.Column="2" Text="Edit selected" Command="{Binding EditCardCommand}" IsVisible="{Binding IsEditVisible}" Margin="10,0,0,0"/>
-                <Button Grid.Column="3" Text="Tags" Command="{Binding SelectTagsCommand}" Margin="10,0,0,0"/>
-
+                <Button Grid.Column="3" Text="Manage Tags" Command="{Binding ManageTagsCommand}" Margin="10,0,0,0"/>
             </Grid>
 
         </VerticalStackLayout>

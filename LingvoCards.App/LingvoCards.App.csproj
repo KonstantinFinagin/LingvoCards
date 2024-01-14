@@ -64,25 +64,31 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <Compile Update="Views\TagPage.xaml.cs">
+	    <DependentUpon>TagPage.xaml</DependentUpon>
+	  </Compile>
 	  <Compile Update="Views\PracticePage.xaml.cs">
 	    <DependentUpon>PracticePage.xaml</DependentUpon>
 	  </Compile>
 	  <Compile Update="Views\CardsPage.xaml.cs">
 	    <DependentUpon>CardsPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\TagPage.xaml.cs">
-	    <DependentUpon>TagPage.xaml</DependentUpon>
+	  <Compile Update="Views\CardTagPage.xaml.cs">
+	    <DependentUpon>CardTagPage.xaml</DependentUpon>
 	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
+	  <MauiXaml Update="Views\TagPage.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </MauiXaml>
 	  <MauiXaml Update="Views\PracticePage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CardsPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
-	  <MauiXaml Update="Views\TagPage.xaml">
+	  <MauiXaml Update="Views\CardTagPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

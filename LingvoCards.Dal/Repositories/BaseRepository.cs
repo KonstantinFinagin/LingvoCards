@@ -24,8 +24,7 @@ public class BaseRepository<T>(DbContext context) : IRepository<T>
 
     public void Update(T entity)
     {
-        DbSet.Attach(entity);
-        context.Entry(entity).State = EntityState.Modified;
+        context.Update(entity);
     }
 
     public void Remove(T entity)

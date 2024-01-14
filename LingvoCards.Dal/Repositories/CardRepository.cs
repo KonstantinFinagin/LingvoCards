@@ -9,11 +9,18 @@ public class CardRepository : BaseRepository<Card>
     {
     }
 
+    public new IEnumerable<Card> GetAll()
+    {
+        return DbSet
+            .Include(t => t.Tags)
+            .ToList();
+    }
+
     public List<Card> GetByTermOrDescription(string searchTerm)
     {
         return DbSet
-            .AsNoTracking()
             .Where(c => c.Term.Contains(searchTerm) || c.Description.Contains(searchTerm))
+            .Include(t => t.Tags)
             .ToList();
     }
 }

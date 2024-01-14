@@ -15,7 +15,7 @@ namespace LingvoCards.Domain.Model
 
         public string Description { get; set; }
 
-        public IEnumerable<Tag> Tags { get; set; }
+        public virtual ICollection<Tag>? Tags { get; set; }
 
         // statistics
         public int SuccessCount { get; set; }
@@ -24,5 +24,19 @@ namespace LingvoCards.Domain.Model
 
         [NotMapped]
         public bool IsSelected { get; set; }
+
+        [NotMapped]
+        public string FormattedTags
+        {
+            get
+            {
+                if (Tags != null && Tags.Any())
+                {
+                    return string.Join(", ", Tags.OrderBy(t => t.Text).Select(t => t.Text));
+                }
+                return string.Empty;
+            }
+        }
+
     }
 }

@@ -21,9 +21,7 @@ namespace LingvoCards.App.ViewModels
 
         [ObservableProperty]
         private ObservableCollection<Card> _cards = new();
-
-        [ObservableProperty]
-        private ObservableCollection<Tag> _currentTags = new();
+        
 
         [ObservableProperty]
         private ObservableCollection<Tag> _defaultTags = new();
@@ -43,7 +41,6 @@ namespace LingvoCards.App.ViewModels
         {
             EditableTerm = value?.Term ?? string.Empty;
             EditableDescription = value?.Description ?? string.Empty;
-            CurrentTags = new ObservableCollection<Tag>(value?.Tags ?? new List<Tag>());
             UpdateButtonVisibility();
         }
 
@@ -74,7 +71,7 @@ namespace LingvoCards.App.ViewModels
         private bool _isEditVisible;
 
         [ObservableProperty]
-        private bool _isDeleteVisible;
+        private bool _isCardSelected;
         
         [RelayCommand]
         private void AddCard()
@@ -144,9 +141,17 @@ namespace LingvoCards.App.ViewModels
         [RelayCommand]
         private async Task SelectTags()
         {
+            var cardTagViewModel = _serviceProvider.GetService<CardTagViewModel>();
+            cardTagViewModel.InitializeWithSelectedCard(SelectedCard);
+
+            var tagSelectionPage = new CardTagPage() { BindingContext = cardTagViewModel };
+            await Application.Current.MainPage.Navigation.PushModalAsync(tagSelectionPage);
+        }
+
+        [RelayCommand]
+        private async Task ManageTags()
+        {
             var tagViewModel = _serviceProvider.GetService<TagViewModel>();
-
-
             var tagSelectionPage = new TagPage() {BindingContext = tagViewModel };
             await Application.Current.MainPage.Navigation.PushModalAsync(tagSelectionPage);
         }
@@ -163,7 +168,7 @@ namespace LingvoCards.App.ViewModels
                 {
                     IsAddNewVisible = true;
                     IsEditVisible = false;
-                    IsDeleteVisible = false;
+                    IsCardSelected = false;
                     break;
                 }
 
@@ -172,7 +177,7 @@ namespace LingvoCards.App.ViewModels
                 {
                     IsAddNewVisible = false;
                     IsEditVisible = false;
-                    IsDeleteVisible = false;
+                    IsCardSelected = false;
                     break;
                 }
 
@@ -180,7 +185,7 @@ namespace LingvoCards.App.ViewModels
                 {
                     IsAddNewVisible = SelectedCard?.Term != EditableTerm || SelectedCard?.Description != EditableDescription && TagsAreTheSame();
                     IsEditVisible = SelectedCard?.Term != EditableTerm || SelectedCard?.Description != EditableDescription && TagsAreTheSame();
-                    IsDeleteVisible = true;
+                    IsCardSelected = true;
                     break;
                 }
 
@@ -189,7 +194,7 @@ namespace LingvoCards.App.ViewModels
                 {
                     IsAddNewVisible = false;
                     IsEditVisible = false;
-                    IsDeleteVisible = true;
+                    IsCardSelected = true;
                     break;
                 }
 

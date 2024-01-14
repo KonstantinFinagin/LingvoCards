@@ -2,9 +2,9 @@ using LingvoCards.App.ViewModels;
 
 namespace LingvoCards.App.Views;
 
-public partial class TagPage : ContentPage
+public partial class CardTagPage : ContentPage
 {
-	public TagPage()
+	public CardTagPage()
 	{
         InitializeComponent();
         BindingContext = Application.Current?.Handler?.MauiContext?.Services.GetService<CardTagViewModel>();

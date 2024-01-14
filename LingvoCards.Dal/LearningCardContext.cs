@@ -25,6 +25,7 @@ namespace LingvoCards.Dal
                 .HasMany(c => c.Tags)
                 .WithMany(t => t.Cards);
 
+
             // Additional model configuration goes here
         }
 
