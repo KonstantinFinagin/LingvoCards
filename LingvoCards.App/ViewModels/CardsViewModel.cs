@@ -16,7 +16,7 @@ namespace LingvoCards.App.ViewModels
         {
             _cardRepository = cardRepository;
             _serviceProvider = serviceProvider;
-            UpdateAllCards();
+            ReloadAllCards();
         }
 
         [ObservableProperty]
@@ -93,16 +93,16 @@ namespace LingvoCards.App.ViewModels
             });
 
             _cardRepository.SaveChanges();
-            UpdateAllCards();
+            ReloadAllCards();
         }
 
         [RelayCommand]
         private void EditCard()
         {
-            if (SelectedCard == null)
-            {
-                return;
-            }
+            if (SelectedCard == null) return;
+
+            var card = _cardRepository.GetCard(SelectedCard.Id);
+            if (card == null) return;
 
             if (string.IsNullOrEmpty(EditableTerm) || string.IsNullOrEmpty(EditableDescription))
             {
@@ -110,11 +110,13 @@ namespace LingvoCards.App.ViewModels
                 return;
             }
 
-            SelectedCard.Term = EditableTerm ?? String.Empty;
-            SelectedCard.Description = EditableDescription ?? String.Empty;
+            card.Term = EditableTerm ?? string.Empty;
+            card.Description = EditableDescription ?? string.Empty;
 
             _cardRepository.SaveChanges();
-            UpdateAllCards();
+            ReloadAllCards();
+
+            SelectedCard = Cards.First(c => c.Id == card.Id);
         }
 
         [RelayCommand]
@@ -135,14 +137,16 @@ namespace LingvoCards.App.ViewModels
             _cardRepository.Remove(SelectedCard);
             _cardRepository.SaveChanges();
             SelectedCard = null;
-            UpdateAllCards();
+            ReloadAllCards();
         }
 
         [RelayCommand]
         private async Task SelectTags()
         {
             var cardTagViewModel = _serviceProvider.GetService<CardTagViewModel>();
+            cardTagViewModel.ModalClosed += ReloadAllCards;
             cardTagViewModel.InitializeWithSelectedCard(SelectedCard);
+
 
             var tagSelectionPage = new CardTagPage() { BindingContext = cardTagViewModel };
             await Application.Current.MainPage.Navigation.PushModalAsync(tagSelectionPage);
@@ -209,10 +213,11 @@ namespace LingvoCards.App.ViewModels
             return true;
         }
 
-        private void UpdateAllCards()
+        private void ReloadAllCards()
         {
             var allCards = _cardRepository.GetAll();
             Cards = new ObservableCollection<Card>(allCards);
+            SelectedCard = Cards.FirstOrDefault(c => c.Id == SelectedCard?.Id);
         }
 
         private void PerformSearch()

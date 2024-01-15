@@ -21,6 +21,8 @@ namespace LingvoCards.App.ViewModels
         [ObservableProperty]
         private string _newTagText;
 
+        public event Action ModalClosed;
+
         partial void OnSelectedCardChanged(Card? value)
         {
             LoadTags();
@@ -58,20 +60,19 @@ namespace LingvoCards.App.ViewModels
         [RelayCommand]
         private async Task Apply()
         {
+            if (SelectedCard == null) return;
+
+            var card = _cardRepository.GetCard(SelectedCard.Id);
+            if (card == null) return;
+
             if (SelectedCard == null)
             {
                 await Shell.Current.CurrentPage.DisplayAlert("Sorry", "Card is not selected. Selection can only be used for deletion", "Got it!");
             }
 
-            var existingCardIds = SelectedCard.Tags.Select(t => t.Id);
-            var newTags = AvailableTags.Where(t => t.IsSelected).Where(t => !existingCardIds.Contains(t.Id));
+            card.Tags = AvailableTags.Where(t => t.IsSelected).ToList();
 
-            foreach (var tag in newTags)
-            {
-                SelectedCard.Tags.Add(tag);
-            }
-
-            _cardRepository.Update(SelectedCard);
+            _cardRepository.Update(card);
             _cardRepository.SaveChanges();
 
             SelectedCard = null;
@@ -104,7 +105,8 @@ namespace LingvoCards.App.ViewModels
 
         private async Task ReturnToCardPage()
         {
-            await Application.Current.MainPage.Navigation.PopModalAsync();
+            await Application.Current.MainPage.Navigation.PopModalAsync(true);
+            ModalClosed?.Invoke();
         }
     }
 }

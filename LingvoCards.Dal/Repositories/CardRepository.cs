@@ -12,13 +12,20 @@ public class CardRepository : BaseRepository<Card>
     public new IEnumerable<Card> GetAll()
     {
         return DbSet
+            .AsNoTracking()
             .Include(t => t.Tags)
             .ToList();
+    }
+
+    public Card? GetCard(Guid id)
+    {
+        return DbSet.Include(c => c.Tags).FirstOrDefault(c => c.Id == id);
     }
 
     public List<Card> GetByTermOrDescription(string searchTerm)
     {
         return DbSet
+            .AsNoTracking()
             .Where(c => c.Term.Contains(searchTerm) || c.Description.Contains(searchTerm))
             .Include(t => t.Tags)
             .ToList();
