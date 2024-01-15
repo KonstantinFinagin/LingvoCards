@@ -13,4 +13,9 @@ public class TagRepository : BaseRepository<Tag>
         return DbSet
             .ToList();
     }
+
+    public ICollection<Tag> GetDefault()
+    {
+        return DbSet.Where(t => t.IsDefault).ToList();
+    }
 }

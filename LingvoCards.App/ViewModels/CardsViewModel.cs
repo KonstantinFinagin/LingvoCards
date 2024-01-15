@@ -11,10 +11,12 @@ namespace LingvoCards.App.ViewModels
     {
         private readonly IServiceProvider _serviceProvider;
         private readonly CardRepository _cardRepository;
+        private readonly TagRepository _tagRepository;
 
-        public CardsViewModel(CardRepository cardRepository, IServiceProvider serviceProvider)
+        public CardsViewModel(CardRepository cardRepository, TagRepository tagRepository, IServiceProvider serviceProvider)
         {
             _cardRepository = cardRepository;
+            _tagRepository = tagRepository;
             _serviceProvider = serviceProvider;
             ReloadAllCards();
         }
@@ -83,17 +85,22 @@ namespace LingvoCards.App.ViewModels
                 return;
             }
 
-            _cardRepository.Add(new Card()
+            var card = new Card()
             {
                 Id = Guid.NewGuid(),
                 CreatedOn = DateTimeOffset.Now,
                 Term = EditableTerm,
                 Description = EditableDescription,
+                Tags = _tagRepository.GetDefault()
                 // TODO tags
-            });
+            };
+
+            _cardRepository.Add(card);
 
             _cardRepository.SaveChanges();
+
             ReloadAllCards();
+            SelectedCard = Cards.FirstOrDefault(c => c.Id == card.Id);
         }
 
         [RelayCommand]
@@ -215,7 +222,7 @@ namespace LingvoCards.App.ViewModels
 
         private void ReloadAllCards()
         {
-            var allCards = _cardRepository.GetAll();
+            var allCards = _cardRepository.GetAll().OrderByDescending(c => c.CreatedOn);
             Cards = new ObservableCollection<Card>(allCards);
             SelectedCard = Cards.FirstOrDefault(c => c.Id == SelectedCard?.Id);
         }
