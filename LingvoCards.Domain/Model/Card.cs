@@ -2,6 +2,14 @@
 
 namespace LingvoCards.Domain.Model
 {
+    public enum ELevel
+    {
+        Bronze = 0,
+        Silver = 1,
+        Gold = 2,
+        Diamond = 3
+    }
+
     /// <summary>
     ///     Language learning card, created by a user, with a word and a term to repeat
     /// </summary>
@@ -21,6 +29,8 @@ namespace LingvoCards.Domain.Model
         public int SuccessCount { get; set; }
 
         public int FailureCount { get; set; }
+
+        public ELevel Level { get; set; }
 
         [NotMapped]
         public bool IsSelected { get; set; }

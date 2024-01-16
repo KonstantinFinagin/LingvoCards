@@ -235,7 +235,5 @@ namespace LingvoCards.App.ViewModels
             
             SelectedCard = null;
         }
-
-
     }
 }
