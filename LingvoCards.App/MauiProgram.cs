@@ -33,6 +33,7 @@ namespace LingvoCards.App
             builder.Services.AddScoped<CardsViewModel>();
             builder.Services.AddScoped<CardTagViewModel>();
             builder.Services.AddScoped<TagViewModel>();
+            builder.Services.AddScoped<PracticeViewModel>();
 
 #if DEBUG
             builder.Logging.AddDebug();

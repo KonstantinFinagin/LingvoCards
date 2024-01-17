@@ -19,7 +19,7 @@
 
 
             <CollectionView.ItemTemplate>
-                <DataTemplate x:Key="EvenRowTemplate" x:DataType="model:Card">
+                <DataTemplate x:DataType="model:Card">
                     <Frame Padding="0" Margin="3" CornerRadius="3" BackgroundColor="Transparent" HasShadow="False">
                         <Grid>
                             <Grid.ColumnDefinitions>

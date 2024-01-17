@@ -1,21 +1,21 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using LingvoCards.Dal.Repositories;
+using LingvoCards.Domain.Model;
 
 namespace LingvoCards.App.ViewModels
 {
-    public class PracticeViewModel : ObservableObject
+    public partial class PracticeViewModel : ObservableObject
     {
+        private readonly CardRepository _cardRepository;
 
         public PracticeViewModel(CardRepository cardRepository)
         {
-            
+            _cardRepository = cardRepository;
+
+            CardLevel = ELevel.Bronze;
         }
 
-
+        [ObservableProperty]
+        private ELevel _cardLevel;
     }
 }

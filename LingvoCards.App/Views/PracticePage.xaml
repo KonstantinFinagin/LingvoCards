@@ -1,9 +1,53 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:converters="clr-namespace:LingvoCards.App.Converters"
              x:Class="LingvoCards.App.Views.PracticePage"
              Title="Practice">
 
-    <VerticalStackLayout>
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:CardLevelToColorConverter x:Key="LevelToColor"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-    </VerticalStackLayout>
+    <ContentView>
+        <Frame WidthRequest="310" HeightRequest="190" 
+               CornerRadius="15" Margin="30"
+               BackgroundColor="Transparent" HasShadow="True"
+               >
+            <Frame.GestureRecognizers>
+                <TapGestureRecognizer Tapped="Card_Tapped"/>
+            </Frame.GestureRecognizers>
+
+            <Grid x:Name="CardGrid">
+                <BoxView Color="#bdc3c7" Opacity="0" x:Name="GradientOverlay"/>
+
+                <Grid RotationY="{Binding CardRotation}">
+                    <!-- Front of the card -->
+                    <Frame x:Name="CardFront" 
+                           CornerRadius="15" 
+                           BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}}" 
+                           BorderColor="#e09a57">
+
+                        <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label x:Name="TextFront" Text="Word/Phrase" FontSize="24" TextColor="White"/>
+                            <!-- Add your buttons here -->
+                        </StackLayout>
+
+                    </Frame>
+                    <!-- Back of the card -->
+                    <Frame x:Name="CardBack" CornerRadius="15" 
+                           BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}, ConverterParameter='Back'}"
+                           IsVisible="{Binding IsBackVisible}">
+
+                        <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
+                            <Label x:Name="TextBack" Text="Back" FontSize="24" TextColor="White"/>
+                            <!-- Add your buttons here -->
+                        </StackLayout>
+
+                    </Frame>
+                </Grid>
+            </Grid>
+        </Frame>
+    </ContentView>
 </ContentPage>
