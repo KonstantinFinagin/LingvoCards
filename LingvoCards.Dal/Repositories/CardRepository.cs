@@ -30,4 +30,9 @@ public class CardRepository : BaseRepository<Card>
             .Include(t => t.Tags)
             .ToList();
     }
+
+    public List<Card> GetFiltered(Tag selectedTag, ELevel selectedLevel, DateTime? dateFrom, DateTime? dateTo, int i)
+    {
+        return GetAll().ToList();
+    }
 }

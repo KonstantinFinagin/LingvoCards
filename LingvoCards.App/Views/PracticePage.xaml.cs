@@ -10,6 +10,7 @@ public partial class PracticePage : ContentPage
         BindingContext = Application.Current?.Handler?.MauiContext?.Services.GetService<PracticeViewModel>();
 
         CardBack.IsVisible = false;
+        TextBack.Opacity = 0;
     }
 
     private async void Card_Tapped(object sender, EventArgs e)
