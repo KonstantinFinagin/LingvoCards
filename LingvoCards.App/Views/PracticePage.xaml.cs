@@ -52,4 +52,49 @@ public partial class PracticePage : ContentPage
         // Reset rotation to 0 without animation for the next flip
         CardGrid.RotationY = 0;
     }
+
+    private async void Button_Previous_OnClicked(object? sender, EventArgs e)
+    {
+        // Animate current card flying to the right
+        await CardGrid.TranslateTo(this.Width, 0, 250, Easing.Linear);
+        CardGrid.TranslationX = -this.Width; // Reset position offscreen to the left
+
+        CardFront.IsVisible = true;
+        CardBack.IsVisible = false;
+        TextFront.Opacity = 1;
+        TextBack.Opacity = 0;
+
+        // Load previous card content here...
+        (BindingContext as PracticeViewModel)?.PreviousCommand.Execute(null);
+        // call previous command
+
+        // Animate previous card coming in from the left
+        await CardGrid.TranslateTo(0, 0, 250, Easing.Linear);
+}
+
+    private async void Button_Next_OnClicked(object? sender, EventArgs e)
+    {
+        // Animate current card flying to the left
+        await CardGrid.TranslateTo(-this.Width, 0, 250, Easing.Linear);
+        CardGrid.TranslationX = this.Width; // Reset position offscreen to the right
+
+        CardFront.IsVisible = true;
+        CardBack.IsVisible = false;
+        TextFront.Opacity = 1;
+        TextBack.Opacity = 0;
+
+        // Load next card content here...
+        // call next command
+        (BindingContext as PracticeViewModel)?.NextCommand.Execute(null);
+
+        // Animate next card coming in from the right
+        await CardGrid.TranslateTo(0, 0, 250, Easing.Linear);
+
+    }
+
+    private void Button_IKnow_OnClicked(object? sender, EventArgs e)
+    {
+        throw new NotImplementedException();
+    }
+
 }

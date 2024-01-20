@@ -18,6 +18,11 @@ namespace LingvoCards.App.Converters
                     return result;
                 }
             }
+
+            if (value is Enum)
+            {
+                return value;
+            }
             return null;
         }
     }

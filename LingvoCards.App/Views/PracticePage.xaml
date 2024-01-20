@@ -7,7 +7,9 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:CardLevelToColorConverter x:Key="LevelToColor"/>
+            <converters:IndexPlusOneConverter x:Key="IndexPlusOneConverter"/>
             <converters:EnumToStringConverter x:Key="EnumToStringConverter"/>
+            <converters:InvertBoolConverter x:Key="InvertBoolConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -15,31 +17,60 @@
     <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
 
         <!--Select params-->
-        <HorizontalStackLayout HorizontalOptions="Center">
-            <Picker Title="Select level" Margin="10"
-                    ItemsSource="{Binding ELevels}"
-                    SelectedItem="{Binding SelectedLevel, Mode=TwoWay, Converter={StaticResource EnumToStringConverter}}">
+        <Grid HorizontalOptions="Center" Padding="5">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="10"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="120"></ColumnDefinition>
+                <ColumnDefinition Width="100"></ColumnDefinition>
+            </Grid.ColumnDefinitions>
+
+            <Label Grid.Row="0" Grid.Column="0" VerticalTextAlignment="Center" Margin="10,0,0,0">Level:</Label>
+            <Picker 
+                Grid.Row="0" Grid.Column="1"
+                VerticalOptions="Fill" HorizontalOptions="Fill"
+                ItemsSource="{Binding ELevels}"
+                SelectedItem="{Binding SelectedLevel, Mode=TwoWay}"
+                >
             </Picker>
-            <Picker Title="Select tags" Margin="10"
-                    ItemsSource="{Binding AllTags}"
-                    SelectedItem="{Binding SelectedTag, Mode=TwoWay}"
-                    ItemDisplayBinding="{Binding Text}">
+
+            <Label Grid.Row="2" Grid.Column="0" VerticalTextAlignment="Center" Margin="10,0,0,0">Tag:</Label>
+            <Picker
+                Grid.Row="2" Grid.Column="1"
+                VerticalOptions="Fill" HorizontalOptions="Fill"
+                ItemsSource="{Binding AllTags}"
+                SelectedItem="{Binding SelectedTag, Mode=TwoWay}"
+                ItemDisplayBinding="{Binding Text}">
             </Picker>
-            <DatePicker
+
+            <Label Grid.Row="0" Grid.Column="2" VerticalTextAlignment="Center" Margin="10,0,0,0">From:</Label>
+            <DatePicker  
+                VerticalOptions="Fill" HorizontalOptions="Fill"
+                Grid.Row="0" Grid.Column="3"
                 Date="{Binding DateFrom, Mode=TwoWay}">
             </DatePicker>
+
+            <Label Grid.Row="2" Grid.Column="2"  VerticalTextAlignment="Center" Margin="10,0,0,0">To:</Label>
             <DatePicker
+                VerticalOptions="Fill" HorizontalOptions="Fill"
+                Grid.Row="2" Grid.Column="3"
                 Date="{Binding DateTo, Mode=TwoWay}">
             </DatePicker>
 
-            <Button Text="Reload" Margin="10" Command="{Binding ReloadCommand}">
+            <Button Grid.Row="0" Grid.Column="4" Grid.RowSpan="3"
+                    Text="Reload" Margin="10" Command="{Binding ReloadCommand}">
             </Button>
-        </HorizontalStackLayout>
+        </Grid>
 
         <!--Backward, Card, Forward-->
         <HorizontalStackLayout >
 
-            <Button Text="B" Margin="10" Command="{Binding PreviousCommand}" IsEnabled="{Binding IsPreviousButtonVisible}"/>
 
             <ContentView>
                 <Frame WidthRequest="450" HeightRequest="280" 
@@ -58,22 +89,20 @@
                             <Frame x:Name="CardFront" 
                                    CornerRadius="15" 
                                    BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}}" 
-                                   BorderColor="#e09a57">
+                                   BorderColor="#e09a57"
+                                   >
 
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
                                     <Label x:Name="TextFront" Text="{Binding Word}" FontSize="24" TextColor="White"/>
-                                    <!-- Add your buttons here -->
                                 </StackLayout>
 
                             </Frame>
                             <!-- Back of the card -->
                             <Frame x:Name="CardBack" CornerRadius="15" 
-                                   BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}, ConverterParameter='Back'}"
-                                   IsVisible="{Binding IsBackVisible}">
+                                   BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}, ConverterParameter='Back'}">
 
                                 <StackLayout HorizontalOptions="Center" VerticalOptions="Center">
                                     <Label x:Name="TextBack" Text="{Binding Description}" FontSize="24" TextColor="White"/>
-                                    <!-- Add your buttons here -->
                                 </StackLayout>
 
                             </Frame>
@@ -82,15 +111,26 @@
                 </Frame>
             </ContentView>
 
-            <Button Text="F" Margin="10" Command="{Binding NextCommand}" IsEnabled="{Binding IsNextButtonVisible}"/>
 
+        </HorizontalStackLayout>
 
-
+        <HorizontalStackLayout HorizontalOptions="Center">
+            <Label Text="{Binding CurrentIndex, Mode=OneWay, Converter={StaticResource IndexPlusOneConverter}}"></Label>
+            <Label Text="of" Margin="10,0,10,0"></Label>
+            <Label Text="{Binding MaxCardsInExercise, Mode=OneWay}"></Label>
         </HorizontalStackLayout>
 
         <!--I know button-->
         <HorizontalStackLayout HorizontalOptions="Center">
-            <Button BackgroundColor="Green" Text="I know!" Margin="10"></Button>
+            <Button Text="&#8592; Back" Margin="10" IsEnabled="{Binding IsPreviousButtonVisible}"
+                    Clicked="Button_Previous_OnClicked"
+                    />
+            <Button BackgroundColor="Green" Text="I know!" Margin="10"
+                    Clicked="Button_IKnow_OnClicked"
+                    ></Button>
+            <Button Text="Next &#8594;" Margin="10" IsEnabled="{Binding IsNextButtonVisible}"
+                    Clicked="Button_Next_OnClicked"
+                    />
         </HorizontalStackLayout>
 
     </VerticalStackLayout>

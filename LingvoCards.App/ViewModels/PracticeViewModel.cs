@@ -17,7 +17,10 @@ namespace LingvoCards.App.ViewModels
             _tagRepository = tagRepository;
 
             _allTags = new ObservableCollection<Tag>(tagRepository.GetAll());
-            _selectedTag = null;
+            SelectedTag = null;
+            SelectedLevel = _eLevels.First();
+
+            Reload();
         }
 
         [ObservableProperty]
@@ -32,8 +35,13 @@ namespace LingvoCards.App.ViewModels
             ELevel.Diamond
         };
 
-        [ObservableProperty]
-        private ELevel _selectedLevel = ELevel.Bronze;
+        [ObservableProperty] 
+        private ELevel _selectedLevel;
+
+        partial void OnSelectedLevelChanged(ELevel value)
+        {
+            Reload();
+        }
 
         [ObservableProperty]
         private ObservableCollection<Tag> _allTags;
@@ -95,36 +103,41 @@ namespace LingvoCards.App.ViewModels
             CardLevel = newValue.Level;
         }
 
+        [ObservableProperty]
+        private int _maxCardsInExercise = 50;
+
+        [ObservableProperty]
         private int _currentIndex;
 
         [RelayCommand]
         private void Previous()
         {
-            if (_currentIndex > 0) _currentIndex--;
+            if (_currentIndex > 0) CurrentIndex--;
             SetCardAndButtons();
         }
-
 
         [RelayCommand]
         private void Next()
         {
-            if (_currentIndex < _cards.Count - 1) _currentIndex++;
+            if (CurrentIndex < _cards.Count - 1) CurrentIndex++;
             SetCardAndButtons();
         }
 
         private void SetCardAndButtons()
         {
-            IsNextButtonVisible = _currentIndex < _cards.Count - 1;
-            IsPreviousButtonVisible = _currentIndex > 0;
-            CurrentCard = _cards.ElementAtOrDefault(_currentIndex);
+            IsBackVisible = false;
+            IsNextButtonVisible = CurrentIndex < _cards.Count - 1;
+            IsPreviousButtonVisible = CurrentIndex > 0;
+            CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
         }
 
         [RelayCommand]
         private void Reload()
         {
-            _currentIndex = 0;
-            _cards = _cardRepository.GetFiltered(SelectedTag, SelectedLevel, DateFrom, DateTo, 50);
-            CurrentCard = _cards.ElementAtOrDefault(_currentIndex);
+            CurrentIndex = 0;
+            _cards = _cardRepository.GetFiltered(SelectedTag, SelectedLevel, DateFrom, DateTo, MaxCardsInExercise);
+            CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
+            MaxCardsInExercise = _cards.Count;
         }
     }
 }
