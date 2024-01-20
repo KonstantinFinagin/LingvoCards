@@ -70,6 +70,9 @@ namespace LingvoCards.App.ViewModels
         private bool _isPreviousButtonVisible = false;
 
         [ObservableProperty]
+        private bool _isIKnowButtonVisible = true;
+
+        [ObservableProperty]
         private string _word;
 
         [ObservableProperty]
@@ -138,6 +141,32 @@ namespace LingvoCards.App.ViewModels
             _cards = _cardRepository.GetFiltered(SelectedTag, SelectedLevel, DateFrom, DateTo, MaxCardsInExercise);
             CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
             MaxCardsInExercise = _cards.Count;
+        }
+
+        [RelayCommand]
+        private void UpgradeLevel()
+        {
+            if (CurrentCard == null) return;
+            if(CurrentCard.Level != ELevel.Diamond) CurrentCard.Level++;
+
+            CurrentCard.SuccessCount++;
+            _cardRepository.Update(CurrentCard);
+            _cardRepository.SaveChanges();
+
+            CardLevel = CurrentCard.Level;
+        }
+
+        [RelayCommand]
+        private void DropLevel()
+        {
+            if (CurrentCard == null || CurrentCard.Level == ELevel.Bronze) return;
+            CurrentCard.Level = ELevel.Bronze;
+
+            CurrentCard.FailureCount++;
+            _cardRepository.Update(CurrentCard);
+            _cardRepository.SaveChanges();
+
+            CardLevel = CurrentCard.Level;
         }
     }
 }

@@ -15,11 +15,16 @@ public partial class PracticePage : ContentPage
 
     private async void Card_Tapped(object sender, EventArgs e)
     {
+        var vm = BindingContext as PracticeViewModel;
+        if (vm == null) throw new Exception("Binding context not set");
+
         // Assuming front and back views are named CardFront and CardBack
         bool isFrontVisible = CardFront.IsVisible;
 
-        // Start rotation to 90 degrees (halfway)
+        // disable I know button
+        vm.IsIKnowButtonVisible = false;
 
+        // Start rotation to 90 degrees (halfway)
         if (isFrontVisible)
         {
             TextFront.FadeTo(0, 250, Easing.Linear);
@@ -34,6 +39,10 @@ public partial class PracticePage : ContentPage
         // Toggle visibility of front and back views
         CardFront.IsVisible = !isFrontVisible;
         CardBack.IsVisible = isFrontVisible;
+        if (isFrontVisible)
+        {
+            vm.DropLevelCommand.Execute(null);
+        }
 
         if (!isFrontVisible)
         {
@@ -44,8 +53,6 @@ public partial class PracticePage : ContentPage
             Task.Delay(150).ContinueWith(c => TextBack.FadeTo(1, 250, Easing.Linear));
         }
         
-
-
         // Complete rotation to 180 degrees
         await CardGrid.RotateYTo(180, 250, Easing.Linear);
 
@@ -55,29 +62,38 @@ public partial class PracticePage : ContentPage
 
     private async void Button_Previous_OnClicked(object? sender, EventArgs e)
     {
+        var vm = BindingContext as PracticeViewModel;
+        if (vm == null) throw new Exception("Binding context not set");
+
         // Animate current card flying to the right
         await CardGrid.TranslateTo(this.Width, 0, 250, Easing.Linear);
         CardGrid.TranslationX = -this.Width; // Reset position offscreen to the left
 
+        vm.IsIKnowButtonVisible = true;
         CardFront.IsVisible = true;
         CardBack.IsVisible = false;
         TextFront.Opacity = 1;
         TextBack.Opacity = 0;
 
         // Load previous card content here...
-        (BindingContext as PracticeViewModel)?.PreviousCommand.Execute(null);
+        vm.PreviousCommand.Execute(null);
         // call previous command
 
         // Animate previous card coming in from the left
         await CardGrid.TranslateTo(0, 0, 250, Easing.Linear);
-}
+    }
 
     private async void Button_Next_OnClicked(object? sender, EventArgs e)
     {
+        var vm = BindingContext as PracticeViewModel;
+        if (vm == null) throw new Exception("Binding context not set");
+
+
         // Animate current card flying to the left
         await CardGrid.TranslateTo(-this.Width, 0, 250, Easing.Linear);
         CardGrid.TranslationX = this.Width; // Reset position offscreen to the right
 
+        vm.IsIKnowButtonVisible = true;
         CardFront.IsVisible = true;
         CardBack.IsVisible = false;
         TextFront.Opacity = 1;
@@ -85,16 +101,27 @@ public partial class PracticePage : ContentPage
 
         // Load next card content here...
         // call next command
-        (BindingContext as PracticeViewModel)?.NextCommand.Execute(null);
+        vm.NextCommand.Execute(null);
 
         // Animate next card coming in from the right
         await CardGrid.TranslateTo(0, 0, 250, Easing.Linear);
-
     }
 
-    private void Button_IKnow_OnClicked(object? sender, EventArgs e)
+    private async void Button_IKnow_OnClicked(object? sender, EventArgs e)
     {
-        throw new NotImplementedException();
+        var vm = BindingContext as PracticeViewModel;
+        if (vm == null) throw new Exception("Binding context not set");
+
+        vm.IsIKnowButtonVisible = false;
+
+        // Animation: scale the card down to zero in 100 ms
+        await CardGrid.ScaleTo(0, 100, Easing.Linear);
+
+        // Updating the level of the card
+        vm.UpgradeLevelCommand.Execute(null);
+
+        // Animation: scale the card back to original size (1) in 100 ms
+        await CardGrid.ScaleTo(1, 100, Easing.Linear);
     }
 
 }
