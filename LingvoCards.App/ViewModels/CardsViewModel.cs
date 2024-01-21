@@ -88,7 +88,7 @@ namespace LingvoCards.App.ViewModels
             var card = new Card()
             {
                 Id = Guid.NewGuid(),
-                CreatedOn = DateTimeOffset.Now,
+                CreatedOn = DateTime.Now,
                 Term = EditableTerm,
                 Description = EditableDescription,
                 Tags = _tagRepository.GetDefault()

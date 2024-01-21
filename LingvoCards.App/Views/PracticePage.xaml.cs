@@ -24,6 +24,9 @@ public partial class PracticePage : ContentPage
         // disable I know button
         vm.IsIKnowButtonVisible = false;
 
+
+        CardLevelTextFront.Opacity = 0;
+        CardLevelTextBack.Opacity = 0;
         // Start rotation to 90 degrees (halfway)
         if (isFrontVisible)
         {
@@ -32,6 +35,7 @@ public partial class PracticePage : ContentPage
         else
         {
             TextBack.FadeTo(0, 250, Easing.Linear);
+
         }
 
         await CardGrid.RotateYTo(90, 250, Easing.Linear);
@@ -52,9 +56,13 @@ public partial class PracticePage : ContentPage
         {
             Task.Delay(150).ContinueWith(c => TextBack.FadeTo(1, 250, Easing.Linear));
         }
-        
+
+
         // Complete rotation to 180 degrees
         await CardGrid.RotateYTo(180, 250, Easing.Linear);
+
+        CardLevelTextFront.Opacity = 0.5;
+        CardLevelTextBack.Opacity = 0.5;
 
         // Reset rotation to 0 without animation for the next flip
         CardGrid.RotationY = 0;

@@ -31,8 +31,31 @@ public class CardRepository : BaseRepository<Card>
             .ToList();
     }
 
-    public List<Card> GetFiltered(Tag selectedTag, ELevel selectedLevel, DateTime? dateFrom, DateTime? dateTo, int i)
+    public List<Card> GetFiltered(Tag? selectedTag, ELevel selectedLevel, DateTime? dateFrom, DateTime? dateTo, int maxCardsInExercise)
     {
-        return DbSet.AsNoTracking().ToList();
+        // Load the cards first (without tag filter)
+        var cards = DbSet.AsNoTracking()
+            .Where(c => c.CreatedOn >= (dateFrom ?? DateTime.Parse("1990-01-01")))
+            .Where(c => c.CreatedOn <= (dateTo ?? DateTime.Parse("2100-01-01")))
+            .Where(c => c.Level == selectedLevel)
+            .OrderBy(c => (double) c.SuccessCount / c.FailureCount)
+            .Take(maxCardsInExercise);
+
+        // Apply tag filter in-memory if necessary
+        if (selectedTag != null)
+        {
+            cards = cards.Where(c => c.Tags != null && c.Tags.Any(t => t.Id == selectedTag.Id));
+        }
+
+        return cards.ToList();
+    }
+
+    public List<Card> GetDefaultFiltered(int maxCardsInExercise)
+    {
+        // Load the cards first (without tag filter)
+        return DbSet.AsNoTracking()
+            .OrderBy(c => (double) c.SuccessCount / c.FailureCount)
+            .Take(maxCardsInExercise)
+            .ToList();
     }
 }

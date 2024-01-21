@@ -17,7 +17,7 @@ namespace LingvoCards.Domain.Model
     {
         public Guid Id { get; set; }
     
-        public DateTimeOffset CreatedOn { get; set; }
+        public DateTime CreatedOn { get; set; }
 
         public string Term { get; set; }
 

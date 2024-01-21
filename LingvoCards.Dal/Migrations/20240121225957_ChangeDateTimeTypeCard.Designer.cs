@@ -3,6 +3,7 @@ using System;
 using LingvoCards.Dal;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -10,9 +11,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace LingvoCards.Dal.Migrations
 {
     [DbContext(typeof(LearningCardContext))]
-    partial class LearningCardContextModelSnapshot : ModelSnapshot
+    [Migration("20240121225957_ChangeDateTimeTypeCard")]
+    partial class ChangeDateTimeTypeCard
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.0");

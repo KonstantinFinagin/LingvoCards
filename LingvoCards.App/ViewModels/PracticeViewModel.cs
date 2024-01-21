@@ -17,14 +17,15 @@ namespace LingvoCards.App.ViewModels
             _tagRepository = tagRepository;
 
             _allTags = new ObservableCollection<Tag>(tagRepository.GetAll());
-            SelectedTag = null;
-            SelectedLevel = _eLevels.First();
+
+            _dateTo = DateTime.Parse("2100-01-01");
+            _dateFrom = DateTime.Parse("1990-01-01");
+
+            _selectedTag = null;
+            _selectedLevel = _eLevels.First();
 
             Reload();
         }
-
-        [ObservableProperty]
-        private ELevel _cardLevel = ELevel.Bronze;
 
         [ObservableProperty]
         private ObservableCollection<ELevel> _eLevels = new()
@@ -78,6 +79,12 @@ namespace LingvoCards.App.ViewModels
         [ObservableProperty]
         private string _description;
 
+        [ObservableProperty]
+        private ELevel _cardLevel = ELevel.Bronze;
+
+        [ObservableProperty] 
+        private string _cardLevelText = "";
+
         partial void OnSelectedLevelChanged(ELevel oldValue, ELevel newValue)
         {
             Reload();
@@ -88,22 +95,14 @@ namespace LingvoCards.App.ViewModels
             Reload();
         }
 
-        partial void OnDateFromChanged(DateTime? oldValue, DateTime? newValue)
-        {
-            Reload();
-        }
-
-        partial void OnDateToChanged(DateTime? value)
-        {
-            Reload();
-        }
-
-        partial void OnCurrentCardChanged(Card? oldValue, Card newValue)
+        partial void OnCurrentCardChanged(Card? oldValue, Card? newValue)
         {
             IsBackVisible = false;
-            Word = newValue.Term;
-            Description = newValue.Description;
-            CardLevel = newValue.Level;
+            Word = newValue?.Term ?? "NO CARD";
+            Description = newValue?.Description ?? "NO CARD";
+
+            CardLevel = newValue?.Level ?? ELevel.Bronze;
+            CardLevelText = GetCardLevelText(newValue);
         }
 
         [ObservableProperty]
@@ -140,8 +139,20 @@ namespace LingvoCards.App.ViewModels
             CurrentIndex = 0;
             _cards = _cardRepository.GetFiltered(SelectedTag, SelectedLevel, DateFrom, DateTo, MaxCardsInExercise);
 
-            CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
-            MaxCardsInExercise = _cards.Count;
+            if (_cards.Count == 0)
+            {
+                _cards = _cardRepository.GetDefaultFiltered(MaxCardsInExercise);
+            }
+
+            if (_cards.Count != 0)
+            {
+                CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
+                MaxCardsInExercise = _cards.Count;
+            }
+            else
+            {
+                CurrentCard = null;
+            }
         }
 
         [RelayCommand]
@@ -155,6 +166,7 @@ namespace LingvoCards.App.ViewModels
             _cardRepository.SaveChanges();
 
             CardLevel = CurrentCard.Level;
+            CardLevelText = GetCardLevelText(CurrentCard);
         }
 
         [RelayCommand]
@@ -168,6 +180,13 @@ namespace LingvoCards.App.ViewModels
             _cardRepository.SaveChanges();
 
             CardLevel = CurrentCard.Level;
+            CardLevelText = GetCardLevelText(CurrentCard);
+        }
+
+        private string GetCardLevelText(Card? card)
+        {
+            return (card?.Level ?? ELevel.Bronze) +
+                   $" S/F: {(double?)card?.SuccessCount / card?.FailureCount ?? null:##.###}";
         }
     }
 }

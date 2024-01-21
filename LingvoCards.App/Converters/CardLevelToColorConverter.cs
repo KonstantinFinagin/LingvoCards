@@ -10,7 +10,7 @@ namespace LingvoCards.App.Converters
             public static Color BronzeFront = Color.FromArgb("#CD7F32");
             public static Color BronzeBack = Color.FromArgb("#703820");
             public static Color SilverFront = Color.FromArgb("#C0C0C0");
-            public static Color SilverBack = Color.FromArgb("#BDC3C7");
+            public static Color SilverBack = Color.FromArgb("#808080");
             public static Color GoldFront = Color.FromArgb("#FFD700");
             public static Color GoldBack = Color.FromArgb("#B8860B");
             public static Color DiamondFront = Color.FromArgb("#B9F2FF");
