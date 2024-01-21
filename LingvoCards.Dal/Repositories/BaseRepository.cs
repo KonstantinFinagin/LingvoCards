@@ -24,6 +24,10 @@ public class BaseRepository<T>(DbContext context) : IRepository<T>
 
     public void Update(T entity)
     {
+        if (context.Entry(entity).State == EntityState.Detached)
+        {
+            DbSet.Attach(entity);
+        }
         context.Update(entity);
     }
 
@@ -39,5 +43,6 @@ public class BaseRepository<T>(DbContext context) : IRepository<T>
     public void SaveChanges()
     {
         context.SaveChanges();
+        context.ChangeTracker.Clear();
     }
 }

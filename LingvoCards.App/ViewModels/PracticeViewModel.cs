@@ -139,6 +139,7 @@ namespace LingvoCards.App.ViewModels
         {
             CurrentIndex = 0;
             _cards = _cardRepository.GetFiltered(SelectedTag, SelectedLevel, DateFrom, DateTo, MaxCardsInExercise);
+
             CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
             MaxCardsInExercise = _cards.Count;
         }
