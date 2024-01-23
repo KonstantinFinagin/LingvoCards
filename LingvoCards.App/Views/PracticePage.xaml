@@ -1,4 +1,4 @@
-<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+﻿<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:converters="clr-namespace:LingvoCards.App.Converters"
              x:Class="LingvoCards.App.Views.PracticePage"
@@ -13,26 +13,24 @@
         </ResourceDictionary>
     </ContentPage.Resources>
 
-
-    <VerticalStackLayout VerticalOptions="Center" HorizontalOptions="Center">
-
-        <!--Select params-->
-        <Grid HorizontalOptions="Center" Padding="5">
+    <Grid RowDefinitions="Auto,*,Auto,Auto">
+        <!--Search and reload-->
+        <Grid  Grid.Row="0" HorizontalOptions="Center" Padding="5">
             <Grid.RowDefinitions>
                 <RowDefinition Height="50"></RowDefinition>
                 <RowDefinition Height="10"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
                 <ColumnDefinition Width="120"></ColumnDefinition>
-                <ColumnDefinition Width="80"></ColumnDefinition>
+                <ColumnDefinition Width="70"></ColumnDefinition>
                 <ColumnDefinition Width="120"></ColumnDefinition>
                 <ColumnDefinition Width="100"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" VerticalTextAlignment="Center" Margin="10,0,0,0">Level:</Label>
-            <Picker 
+            <Picker
                 Grid.Row="0" Grid.Column="1"
                 VerticalOptions="Fill" HorizontalOptions="Fill"
                 ItemsSource="{Binding ELevels}"
@@ -50,7 +48,7 @@
             </Picker>
 
             <Label Grid.Row="0" Grid.Column="2" VerticalTextAlignment="Center" Margin="10,0,0,0">From:</Label>
-            <DatePicker  
+            <DatePicker
                 VerticalOptions="Fill" HorizontalOptions="Fill"
                 Grid.Row="0" Grid.Column="3"
                 Date="{Binding DateFrom, Mode=TwoWay}">
@@ -68,83 +66,87 @@
             </Button>
         </Grid>
 
-        <!--Backward, Card, Forward-->
-        <HorizontalStackLayout >
-
+        <!--Card-->
+        <Grid Grid.Row="1" BackgroundColor="Beige">
 
             <ContentView>
-                <Frame WidthRequest="450" HeightRequest="280" 
-                       CornerRadius="15" Margin="30"
-                       BackgroundColor="Transparent" HasShadow="True">
+                <Frame
+                    x:Name="CardFrame"
+                    HorizontalOptions="Fill"
+                    VerticalOptions="Fill"
+                    CornerRadius="15" Margin="30"
+                    BackgroundColor="Transparent" HasShadow="True"
+                    SizeChanged="OnCardFrameSizeChanged"
+                    >
                     <Frame.GestureRecognizers>
                         <TapGestureRecognizer Tapped="Card_Tapped"/>
                     </Frame.GestureRecognizers>
 
-                    <Grid x:Name="CardGrid">
-                        <!-- ... -->
+                    <Grid x:Name="CardGrid" InputTransparent="True">
 
-                        <Grid RotationY="{Binding CardRotation}">
+                        <Grid RotationY="{Binding CardRotation}" InputTransparent="True">
                             <!-- Front of the card -->
-                            <Frame x:Name="CardFront" 
-                                   CornerRadius="15" 
-                                   BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}}" 
+                            <Frame x:Name="CardFront"
+                                   InputTransparent="True"
+                                   CornerRadius="15"
+                                   BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}}"
                                    BorderColor="LightGray"
                                    HasShadow="True">
-
+    
                                 <Grid>
                                     <!-- Text Background -->
                                     <Frame BackgroundColor="#000000" Opacity="0.7" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center" Padding="10">
                                         <Label x:Name="TextFront" Text="{Binding Word}" FontSize="24" TextColor="White"/>
                                     </Frame>
-
+    
                                     <!-- Card Level in the Right Lower Corner -->
                                     <Label x:Name="CardLevelTextFront" Text="{Binding CardLevelText}" FontSize="Small" TextColor="White" Opacity="0.5" HorizontalOptions="End" VerticalOptions="End" Margin="10"/>
                                 </Grid>
                             </Frame>
-
+    
                             <!-- Back of the card -->
-                            <Frame x:Name="CardBack" CornerRadius="15" 
+                            <Frame x:Name="CardBack" CornerRadius="15"
+                                   InputTransparent="True"
                                    BackgroundColor="{Binding CardLevel, Converter={StaticResource LevelToColor}, ConverterParameter='Back'}"
                                    BorderColor="LightGray"
                                    HasShadow="True">
-
+    
                                 <Grid>
                                     <!-- Text Background -->
                                     <Frame BackgroundColor="#000000" Opacity="0.7" CornerRadius="10" HorizontalOptions="Center" VerticalOptions="Center" Padding="10">
                                         <Label x:Name="TextBack" Text="{Binding Description}" FontSize="24" TextColor="White"/>
                                     </Frame>
-
+    
                                     <!-- Card Level in the Right Lower Corner -->
                                     <Label x:Name="CardLevelTextBack" Text="{Binding CardLevelText}" FontSize="Small" TextColor="White" Opacity="0.5" HorizontalOptions="End" VerticalOptions="End" Margin="10"/>
                                 </Grid>
                             </Frame>
+
                         </Grid>
                     </Grid>
                 </Frame>
             </ContentView>
 
+        </Grid>
 
-        </HorizontalStackLayout>
+        <!--Card index labels-->
+        <Grid Grid.Row="2">
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Label Text="{Binding CurrentIndex, Mode=OneWay, Converter={StaticResource IndexPlusOneConverter}}"></Label>
+                <Label Text="of" Margin="10,0,10,0"></Label>
+                <Label Text="{Binding MaxCardsInExercise, Mode=OneWay}"></Label>
+            </HorizontalStackLayout>
+        </Grid>
 
-        <HorizontalStackLayout HorizontalOptions="Center">
-            <Label Text="{Binding CurrentIndex, Mode=OneWay, Converter={StaticResource IndexPlusOneConverter}}"></Label>
-            <Label Text="of" Margin="10,0,10,0"></Label>
-            <Label Text="{Binding MaxCardsInExercise, Mode=OneWay}"></Label>
-        </HorizontalStackLayout>
+        <!--Navigation and IKnow button-->
+        <Grid Grid.Row="3">
+            <HorizontalStackLayout HorizontalOptions="Center">
+                <Button Text="&#8592; Back" Margin="10" IsEnabled="{Binding IsPreviousButtonVisible}" Clicked="Button_Previous_OnClicked"/>
+                <Button BackgroundColor="Green" Text="I know!" Margin="10" Clicked="Button_IKnow_OnClicked"/>
+                <Button Text="Next &#8594;" Margin="10" IsEnabled="{Binding IsNextButtonVisible}" Clicked="Button_Next_OnClicked" />
+            </HorizontalStackLayout>
+        </Grid>
 
-        <!--I know button-->
-        <HorizontalStackLayout HorizontalOptions="Center">
-            <Button Text="&#8592; Back" Margin="10" IsEnabled="{Binding IsPreviousButtonVisible}"
-                    Clicked="Button_Previous_OnClicked"
-                    />
-            <Button BackgroundColor="Green" Text="I know!" Margin="10"
-                    Clicked="Button_IKnow_OnClicked"
-                    ></Button>
-            <Button Text="Next &#8594;" Margin="10" IsEnabled="{Binding IsNextButtonVisible}"
-                    Clicked="Button_Next_OnClicked"
-                    />
-        </HorizontalStackLayout>
-
-    </VerticalStackLayout>
+    </Grid>
 
 </ContentPage>

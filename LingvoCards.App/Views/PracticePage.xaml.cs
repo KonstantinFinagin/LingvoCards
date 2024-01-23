@@ -1,4 +1,5 @@
 using LingvoCards.App.ViewModels;
+using Microsoft.Maui.Controls;
 
 namespace LingvoCards.App.Views;
 
@@ -8,9 +9,11 @@ public partial class PracticePage : ContentPage
 	{
 		InitializeComponent();
         BindingContext = Application.Current?.Handler?.MauiContext?.Services.GetService<PracticeViewModel>();
-
+        
         CardBack.IsVisible = false;
         TextBack.Opacity = 0;
+
+        SetCardFrameWidth(CardFrame);
     }
 
     private async void Card_Tapped(object sender, EventArgs e)
@@ -123,13 +126,33 @@ public partial class PracticePage : ContentPage
         vm.IsIKnowButtonVisible = false;
 
         // Animation: scale the card down to zero in 100 ms
-        await CardGrid.ScaleTo(0, 100, Easing.Linear);
+        await CardGrid.ScaleTo(0, 250, Easing.Linear);
 
         // Updating the level of the card
         vm.UpgradeLevelCommand.Execute(null);
 
         // Animation: scale the card back to original size (1) in 100 ms
-        await CardGrid.ScaleTo(1, 100, Easing.Linear);
+        await CardGrid.ScaleTo(1, 250, Easing.Linear);
     }
 
+    private void OnCardFrameSizeChanged(object? sender, EventArgs e)
+    {
+        var frame = sender as Frame;
+        if (frame == null) return;
+
+        // Get screen width
+        SetCardFrameWidth(frame);
+    }
+
+    private static void SetCardFrameWidth(Frame frame)
+    {
+        var screenWidth = DeviceDisplay.MainDisplayInfo.Width / DeviceDisplay.MainDisplayInfo.Density;
+
+        // Set the width of the frame to the lesser of screen width and 600
+        var frameWidth = Math.Min(screenWidth - 80, 600);
+
+        // Set the height of the frame to 0.618 of the width
+        frame.WidthRequest = frameWidth;
+        frame.HeightRequest = frameWidth * 0.618;
+    }
 }
