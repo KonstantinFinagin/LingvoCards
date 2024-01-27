@@ -47,6 +47,8 @@ public class CardRepository : BaseRepository<Card>
             cards = cards.Where(c => c.Tags != null && c.Tags.Any(t => t.Id == selectedTag.Id));
         }
 
+        // TODO error when a tag is selected - fix
+
         return cards.ToList();
     }
 

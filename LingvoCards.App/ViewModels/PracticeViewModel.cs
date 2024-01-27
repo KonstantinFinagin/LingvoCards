@@ -185,8 +185,12 @@ namespace LingvoCards.App.ViewModels
 
         private string GetCardLevelText(Card? card)
         {
-            return (card?.Level ?? ELevel.Bronze) +
-                   $" S/F: {(double?)card?.SuccessCount / card?.FailureCount ?? null:##.###}";
+            if (card == null)
+            {
+                return "no card, S/F: -/-";
+            }
+
+            return card.Level + $" S/F: {card.SuccessRateText}";
         }
     }
 }

@@ -30,6 +30,9 @@ namespace LingvoCards.Domain.Model
 
         public int FailureCount { get; set; }
 
+        [NotMapped] 
+        public string SuccessRateText => $"{SuccessCount}/{FailureCount}";
+
         public ELevel Level { get; set; }
 
         [NotMapped]

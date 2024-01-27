@@ -1,9 +1,16 @@
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:model="clr-namespace:LingvoCards.Domain.Model;assembly=LingvoCards.Domain"
+             xmlns:converters="clr-namespace:LingvoCards.App.Converters"
              x:Class="LingvoCards.App.Views.CardsPage"
              Title="View/edit cards"
              >
+
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <converters:CardLevelToColorConverter x:Key="LevelToColor"/>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
 
@@ -20,16 +27,13 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Card">
-                    <Frame Padding="0" Margin="3" CornerRadius="3" BackgroundColor="Transparent" HasShadow="False">
+                    <Frame Padding="0" Margin="3" CornerRadius="3" BackgroundColor="Transparent" HasShadow="False" InputTransparent="True">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
                                 <ColumnDefinition Width="3*"/>
-                                <ColumnDefinition Width="100"/>
                                 <ColumnDefinition Width="60"/>
                                 <ColumnDefinition Width="60"/>
-                                <ColumnDefinition Width="100"/>
-
                             </Grid.ColumnDefinitions>
 
                             <Grid.RowDefinitions>
@@ -42,16 +46,13 @@
                             <BoxView Grid.Row="0" Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
                             <BoxView Grid.Row="0" Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
                             <BoxView Grid.Row="0" Grid.Column="2" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
-                            <BoxView Grid.Row="0" Grid.Column="3" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
-                            <BoxView Grid.Row="0" Grid.Column="4" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
 
-                            <Label Grid.Row="0" Grid.Column="0"  Margin="5" Text="{Binding Term}" FontSize="Small" VerticalTextAlignment="Center"/>
-                            <Label Grid.Row="0" Grid.Column="1"  Margin="5" Text="{Binding Description}" FontSize="Small" VerticalTextAlignment="Center"/>
+                            <Label Grid.Row="0" Grid.Column="0" MaxLines="2"  Margin="5" Text="{Binding Term}" FontSize="Small" VerticalTextAlignment="Center"/>
+                            <Label Grid.Row="0" Grid.Column="1" MaxLines="2" Margin="5" Text="{Binding Description}" FontSize="Small" VerticalTextAlignment="Center"/>
                             <Label Grid.Row="0" Grid.Column="2"  Margin="5" Text="{Binding CreatedOn, StringFormat='{0:dd-MM-yy}'}" FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-                            <Label Grid.Row="0" Grid.Column="3"  Margin="5" Text="{Binding SuccessCount}" FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-                            <Label Grid.Row="0" Grid.Column="4"  Margin="5" Text="{Binding FailureCount}" FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-                            <Label Grid.Row="0" Grid.Column="5"  Margin="5" Text="{Binding Level}" FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-
+                            <Label Grid.Row="0" Grid.Column="3"  Margin="5" Text="{Binding SuccessRateText}" FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"
+                                   BackgroundColor="{Binding Level, Converter={StaticResource LevelToColor}}"
+                                   />
 
                         </Grid>
                     </Frame>
