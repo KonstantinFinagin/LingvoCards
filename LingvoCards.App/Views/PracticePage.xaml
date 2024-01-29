@@ -10,6 +10,7 @@
             <converters:IndexPlusOneConverter x:Key="IndexPlusOneConverter"/>
             <converters:EnumToStringConverter x:Key="EnumToStringConverter"/>
             <converters:InvertBoolConverter x:Key="InvertBoolConverter"/>
+            <converters:NullToPlaceholderConverter x:Key="NullToPlaceholderConverter"/>
         </ResourceDictionary>
     </ContentPage.Resources>
 
@@ -44,7 +45,8 @@
                 VerticalOptions="Fill" HorizontalOptions="Fill"
                 ItemsSource="{Binding AllTags}"
                 SelectedItem="{Binding SelectedTag, Mode=TwoWay}"
-                ItemDisplayBinding="{Binding Text}">
+                ItemDisplayBinding="{Binding ., Converter={StaticResource NullToPlaceholderConverter}}"
+                >
             </Picker>
 
             <Label Grid.Row="0" Grid.Column="2" VerticalTextAlignment="Center" Margin="10,0,0,0">From:</Label>

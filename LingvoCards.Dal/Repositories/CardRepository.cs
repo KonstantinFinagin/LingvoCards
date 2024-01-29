@@ -1,5 +1,6 @@
 ﻿using LingvoCards.Domain.Model;
 using Microsoft.EntityFrameworkCore;
+using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LingvoCards.Dal.Repositories;
 
@@ -34,20 +35,17 @@ public class CardRepository : BaseRepository<Card>
     public List<Card> GetFiltered(Tag? selectedTag, ELevel selectedLevel, DateTime? dateFrom, DateTime? dateTo, int maxCardsInExercise)
     {
         // Load the cards first (without tag filter)
-        var cards = DbSet.AsNoTracking()
+        var cards = DbSet
+            .AsNoTracking()
             .Where(c => c.CreatedOn >= (dateFrom ?? DateTime.Parse("1990-01-01")))
             .Where(c => c.CreatedOn <= (dateTo ?? DateTime.Parse("2100-01-01")))
-            .Where(c => c.Level == selectedLevel)
-            .OrderBy(c => (double) c.SuccessCount / c.FailureCount)
-            .Take(maxCardsInExercise);
+            .Where(c => c.Level == selectedLevel);
 
         // Apply tag filter in-memory if necessary
         if (selectedTag != null)
         {
-            cards = cards.Where(c => c.Tags != null && c.Tags.Any(t => t.Id == selectedTag.Id));
+            cards = cards.Where(c => c.Tags.Any(t => t.Id == selectedTag.Id));
         }
-
-        // TODO error when a tag is selected - fix
 
         return cards.ToList();
     }
@@ -56,7 +54,7 @@ public class CardRepository : BaseRepository<Card>
     {
         // Load the cards first (without tag filter)
         return DbSet.AsNoTracking()
-            .OrderBy(c => (double) c.SuccessCount / c.FailureCount)
+            .OrderBy(c => (double) c.SuccessCount / (c.FailureCount+1))
             .Take(maxCardsInExercise)
             .ToList();
     }

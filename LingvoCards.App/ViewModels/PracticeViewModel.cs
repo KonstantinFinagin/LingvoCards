@@ -16,10 +16,10 @@ namespace LingvoCards.App.ViewModels
             _cardRepository = cardRepository;
             _tagRepository = tagRepository;
 
-            _allTags = new ObservableCollection<Tag>(tagRepository.GetAll());
+            _allTags = new ObservableCollection<Tag?>(tagRepository.GetAll().Append((Tag?)null));
 
-            _dateTo = DateTime.Parse("2100-01-01");
-            _dateFrom = DateTime.Parse("1990-01-01");
+            _dateFrom =  DateTime.Now.AddMonths(-6).Date;
+            _dateTo = DateTime.Now.Date.AddDays(1).AddSeconds(-1);
 
             _selectedTag = null;
             _selectedLevel = _eLevels.First();
@@ -90,7 +90,7 @@ namespace LingvoCards.App.ViewModels
             Reload();
         }
 
-        partial void OnSelectedTagChanged(Tag value)
+        partial void OnSelectedTagChanged(Tag? value)
         {
             Reload();
         }
