@@ -17,4 +17,7 @@ public class Tag
 
     [NotMapped]
     public bool IsSelected { get; set; }
+
+    [NotMapped] 
+    public string IsDefaultText => IsDefault ? "(Default)" : string.Empty;
 }

@@ -6,11 +6,14 @@
        Shell.ForegroundColor="Beige"
        >
 
-    <FlyoutItem Title="View" Icon="icon_view.png">
+    <FlyoutItem Title="View">
         <ShellContent ContentTemplate="{DataTemplate views:CardsPage}" />
     </FlyoutItem>
-    <FlyoutItem Title="Practice" Icon="icon_practice.png">
+    <FlyoutItem Title="Practice">
         <ShellContent ContentTemplate="{DataTemplate views:PracticePage}" />
+    </FlyoutItem>
+    <FlyoutItem Title="Manage tags">
+        <ShellContent ContentTemplate="{DataTemplate views:TagPage}" />
     </FlyoutItem>
 
 </Shell>

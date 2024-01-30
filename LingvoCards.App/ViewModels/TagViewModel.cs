@@ -94,18 +94,6 @@ namespace LingvoCards.App.ViewModels
 
             LoadTags();
         }
-
-        [RelayCommand]
-        private async Task Dismiss()
-        {
-            await ReturnToCardPage();
-        }
-
-        private async Task ReturnToCardPage()
-        {
-            await Application.Current.MainPage.Navigation.PopModalAsync();
-        }
-
     }
 }
 

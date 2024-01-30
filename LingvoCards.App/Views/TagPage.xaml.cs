@@ -7,6 +7,6 @@ public partial class TagPage : ContentPage
 	public TagPage()
 	{
         InitializeComponent();
-        BindingContext = Application.Current?.Handler?.MauiContext?.Services.GetService<CardTagViewModel>();
+        BindingContext = Application.Current?.Handler?.MauiContext?.Services.GetService<TagViewModel>();
     }
 }

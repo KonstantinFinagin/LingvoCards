@@ -6,117 +6,45 @@
              x:Class="LingvoCards.App.Views.CardTagPage"
              Title="Select Tags">
 
-    <ContentPage.Resources>
-        <!-- DataTemplateSelector for alternating row colors -->
-        <DataTemplate x:Key="EvenRowTemplate" x:DataType="model:Tag">
-            <Grid BackgroundColor="#f0f0f0">
 
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup>
-                        <VisualState Name="Normal"/>
-                        <VisualState Name="Selected">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{StaticResource Secondary}"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
+    <Grid RowDefinitions="Auto, Auto, *, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+        <CollectionView 
+            Grid.Row="2"
+            x:Name="TagsCollectionView"
+            ItemsSource="{Binding AvailableTags}"
+            SelectionMode="None">
 
-                    </Grid.ColumnDefinitions>
+                <CollectionView.ItemTemplate>
+                    <DataTemplate x:DataType="model:Tag">
+                        <Frame Padding="0" Margin="3" CornerRadius="3" BackgroundColor="Transparent" HasShadow="False">
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="40"/>
 
-                    <!-- Column borders -->
-                    <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
-                    <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                                </Grid.ColumnDefinitions>
 
-                    <!-- Header labels -->
-                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
-                    <Label Grid.Column="1" Text="{Binding Text}" VerticalTextAlignment="Center" Margin="10,0,10,0"/>
-                    <CheckBox Grid.Column="2" IsChecked="{Binding IsDefault, Mode=OneWay}" IsEnabled="False"/>
+                                <!-- Column borders -->
+                                <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                                <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
 
-                </Grid>
-            </Grid>
-        </DataTemplate>
+                                <!-- Header labels -->
+                                <Label Grid.Column="0" Text="{Binding Text}" VerticalTextAlignment="Center" Margin="10,0,10,0"/>
+                                <Label  Grid.Column="1" Text="{Binding IsDefaultText, Mode=OneWay}" VerticalTextAlignment="Center" Margin="10,0,10,0" IsEnabled="False"/>
+                                <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
 
-        <DataTemplate x:Key="OddRowTemplate" x:DataType="model:Tag">
-            <Grid BackgroundColor="White">
+                            </Grid>
 
-                <VisualStateManager.VisualStateGroups>
-                    <VisualStateGroup>
-                        <VisualState Name="Normal"/>
-                        <VisualState Name="Selected">
-                            <VisualState.Setters>
-                                <Setter Property="BackgroundColor" Value="{StaticResource Secondary}"/>
-                            </VisualState.Setters>
-                        </VisualState>
-                    </VisualStateGroup>
-                </VisualStateManager.VisualStateGroups>
+                        </Frame>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
 
-                <Grid>
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="40"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-
-                    </Grid.ColumnDefinitions>
-
-                    <!-- Column borders -->
-                    <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
-                    <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
-
-                    <!-- Header labels -->
-                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
-                    <Label Grid.Column="1" Text="{Binding Text}" VerticalTextAlignment="Center" Margin="10,0,10,0"/>
-                    <CheckBox Grid.Column="2" IsChecked="{Binding IsDefault, Mode=OneWay}" IsEnabled="False"/>
-
-                </Grid>
-            </Grid>
-        </DataTemplate>
-        <helpers:RowColorDataTemplateSelector x:Key="RowColorSelector"
-                                            EvenRowTemplate="{StaticResource EvenRowTemplate}"
-                                            OddRowTemplate="{StaticResource OddRowTemplate}" />
-    </ContentPage.Resources>
-
-
-    <Grid RowDefinitions="*, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
-        <Frame Padding="0" HasShadow="False" BorderColor="LightGray">
-            <CollectionView x:Name="TagsCollectionView"
-                        ItemsSource="{Binding AvailableTags}"
-                        SelectionMode="None"
-                        ItemTemplate="{StaticResource RowColorSelector}"
-                        >
-
-                <CollectionView.Header>
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="40"/>
-                            <ColumnDefinition Width="*"/>
-                            <ColumnDefinition Width="*"/>
-
-                        </Grid.ColumnDefinitions>
-
-                        <!-- Column borders -->
-                        <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
-                        <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
-
-                        <!-- Header labels -->
-                        <Label Grid.Column="0" Margin="5" Text="#" FontAttributes="Bold" FontSize="Medium"/>
-                        <Label Grid.Column="1" Margin="5" Text="Tag" FontAttributes="Bold" FontSize="Medium"/>
-                        <Label Grid.Column="2" Margin="5" Text="Is Default" FontAttributes="Bold" FontSize="Medium"/>
-
-                    </Grid>
-                </CollectionView.Header>
             </CollectionView>
 
-        </Frame>
-
         <!--Bottom section-->
-        <VerticalStackLayout Grid.Row="1" Spacing="10">
+        <VerticalStackLayout Grid.Row="3" Spacing="10">
 
             <!--Apply and save defaults-->
             <Grid HorizontalOptions="End">

@@ -88,12 +88,10 @@
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Column="0" Margin="5" Text="Tags: " FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
                 <Entry Grid.Column="1" Placeholder="Tags" Text="{Binding SelectedCard.FormattedTags, Mode=OneWay}" />
-                <Button Grid.Column="2" Text="Select tags" Command="{Binding SelectTagsCommand}" IsVisible="{Binding IsCardSelected}" Margin="10,0,0,0"/>
             </Grid>
 
             <Grid>
@@ -107,8 +105,9 @@
 
                 <Button Grid.Column="1" BackgroundColor="PaleVioletRed" Text="Delete" Command="{Binding DeleteCardCommand}" IsVisible="{Binding IsCardSelected}" Margin="10,0,0,0"/>
                 <Button Grid.Column="2" Text="Add new" Command="{Binding AddCardCommand}" IsVisible="{Binding IsAddNewVisible}" Margin="10,0,0,0"/>
-                <Button Grid.Column="3" Text="Edit selected" Command="{Binding EditCardCommand}" IsVisible="{Binding IsEditVisible}" Margin="10,0,0,0"/>
-                <Button Grid.Column="4" Text="Manage Tags" Command="{Binding ManageTagsCommand}" Margin="10,0,0,0"/>
+                <Button Grid.Column="3" Text="Update" Command="{Binding EditCardCommand}" IsVisible="{Binding IsEditVisible}" Margin="10,0,0,0"/>
+                <Button Grid.Column="4" Text="Tags" Command="{Binding SelectTagsCommand}" IsVisible="{Binding IsCardSelected}" Margin="10,0,0,0"/>
+
             </Grid>
 
         </VerticalStackLayout>

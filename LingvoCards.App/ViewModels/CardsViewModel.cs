@@ -159,14 +159,6 @@ namespace LingvoCards.App.ViewModels
             await Application.Current.MainPage.Navigation.PushModalAsync(tagSelectionPage);
         }
 
-        [RelayCommand]
-        private async Task ManageTags()
-        {
-            var tagViewModel = _serviceProvider.GetService<TagViewModel>();
-            var tagSelectionPage = new TagPage() {BindingContext = tagViewModel };
-            await Application.Current.MainPage.Navigation.PushModalAsync(tagSelectionPage);
-        }
-
         private void UpdateButtonVisibility()
         {
             var isCardSelected = SelectedCard != null;
