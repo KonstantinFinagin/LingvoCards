@@ -16,6 +16,14 @@ public partial class PracticePage : ContentPage
         SetCardFrameWidth(CardFrame);
     }
 
+    protected override void OnAppearing()
+    {
+        base.OnAppearing();
+
+        var viewModel = this.BindingContext as PracticeViewModel;
+        viewModel?.Reload(); // Your method to refresh data
+    }
+
     private async void Card_Tapped(object sender, EventArgs e)
     {
         var vm = BindingContext as PracticeViewModel;

@@ -21,13 +21,14 @@
                 <RowDefinition Height="50"></RowDefinition>
                 <RowDefinition Height="10"></RowDefinition>
                 <RowDefinition Height="50"></RowDefinition>
+                <RowDefinition Height="10"></RowDefinition>
+                <RowDefinition Height="Auto"></RowDefinition>
             </Grid.RowDefinitions>
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="70"></ColumnDefinition>
                 <ColumnDefinition Width="120"></ColumnDefinition>
                 <ColumnDefinition Width="70"></ColumnDefinition>
                 <ColumnDefinition Width="120"></ColumnDefinition>
-                <ColumnDefinition Width="100"></ColumnDefinition>
             </Grid.ColumnDefinitions>
 
             <Label Grid.Row="0" Grid.Column="0" VerticalTextAlignment="Center" Margin="10,0,0,0">Level:</Label>
@@ -63,13 +64,12 @@
                 Date="{Binding DateTo, Mode=TwoWay}">
             </DatePicker>
 
-            <Button Grid.Row="0" Grid.Column="4" Grid.RowSpan="3"
-                    Text="Reload" Margin="10" Command="{Binding ReloadCommand}">
-            </Button>
+            <Button Grid.Column="0" Grid.ColumnSpan="4" Grid.Row="4" HorizontalOptions="Fill" Text="&#x21BB; Reload" Margin="10" Command="{Binding ReloadCommand}"/>
+
         </Grid>
 
         <!--Card-->
-        <Grid Grid.Row="1" BackgroundColor="Beige">
+        <Grid Grid.Row="1">
 
             <ContentView>
                 <Frame
@@ -143,9 +143,9 @@
         <!--Navigation and IKnow button-->
         <Grid Grid.Row="3">
             <HorizontalStackLayout HorizontalOptions="Center">
-                <Button Text="&#8592; Back" Margin="10" IsEnabled="{Binding IsPreviousButtonVisible}" Clicked="Button_Previous_OnClicked"/>
+                <Button Text="&#8592;" Margin="10" IsEnabled="{Binding IsPreviousButtonVisible}" Clicked="Button_Previous_OnClicked"/>
                 <Button BackgroundColor="Green" Text="I know!" Margin="10" Clicked="Button_IKnow_OnClicked"/>
-                <Button Text="Next &#8594;" Margin="10" IsEnabled="{Binding IsNextButtonVisible}" Clicked="Button_Next_OnClicked" />
+                <Button Text="&#8594;" Margin="10" IsEnabled="{Binding IsNextButtonVisible}" Clicked="Button_Next_OnClicked" />
             </HorizontalStackLayout>
         </Grid>
 

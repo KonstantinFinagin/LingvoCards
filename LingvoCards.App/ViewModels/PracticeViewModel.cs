@@ -17,14 +17,6 @@ namespace LingvoCards.App.ViewModels
             _tagRepository = tagRepository;
 
             _allTags = new ObservableCollection<Tag?>(tagRepository.GetAll().Append((Tag?)null));
-
-            _dateFrom =  DateTime.Now.AddMonths(-6).Date;
-            _dateTo = DateTime.Now.Date.AddDays(1).AddSeconds(-1);
-
-            _selectedTag = null;
-            _selectedLevel = _eLevels.First();
-
-            Reload();
         }
 
         [ObservableProperty]
@@ -38,11 +30,6 @@ namespace LingvoCards.App.ViewModels
 
         [ObservableProperty] 
         private ELevel _selectedLevel;
-
-        partial void OnSelectedLevelChanged(ELevel value)
-        {
-            Reload();
-        }
 
         [ObservableProperty]
         private ObservableCollection<Tag> _allTags;
@@ -85,14 +72,24 @@ namespace LingvoCards.App.ViewModels
         [ObservableProperty] 
         private string _cardLevelText = "";
 
-        partial void OnSelectedLevelChanged(ELevel oldValue, ELevel newValue)
+        partial void OnSelectedLevelChanged(ELevel value)
         {
-            Reload();
+            ReloadInternal();
         }
 
         partial void OnSelectedTagChanged(Tag? value)
         {
-            Reload();
+            ReloadInternal();
+        }
+
+        partial void OnDateFromChanged(DateTime? value)
+        {
+            ReloadInternal();
+        }
+
+        partial void OnDateToChanged(DateTime? value)
+        {
+            ReloadInternal();
         }
 
         partial void OnCurrentCardChanged(Card? oldValue, Card? newValue)
@@ -114,7 +111,7 @@ namespace LingvoCards.App.ViewModels
         [RelayCommand]
         private void Previous()
         {
-            if (_currentIndex > 0) CurrentIndex--;
+            if (CurrentIndex > 0) CurrentIndex--;
             SetCardAndButtons();
         }
 
@@ -131,23 +128,40 @@ namespace LingvoCards.App.ViewModels
             IsNextButtonVisible = CurrentIndex < _cards.Count - 1;
             IsPreviousButtonVisible = CurrentIndex > 0;
             CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
+            MaxCardsInExercise = _cards.Count;
         }
 
         [RelayCommand]
-        private void Reload()
+        public void Reload()
+        {
+            DefaultSearchParams();
+            ReloadInternal();
+        }
+
+        private void DefaultSearchParams()
+        {
+            DateFrom = DateTime.Now.AddMonths(-6).Date;
+            DateTo = DateTime.Now.Date.AddDays(1).AddSeconds(-1);
+            SelectedTag = null;
+            SelectedLevel = ELevel.Bronze;
+        }
+
+        private void ReloadInternal()
         {
             CurrentIndex = 0;
             _cards = _cardRepository.GetFiltered(SelectedTag, SelectedLevel, DateFrom, DateTo, MaxCardsInExercise);
 
             if (_cards.Count == 0)
             {
+                // show alert that default cards will be shown
+                Shell.Current.CurrentPage.DisplayAlert("No cards", "No cards match search criteria. Loading defaults", "Got it!");
+                DefaultSearchParams();
                 _cards = _cardRepository.GetDefaultFiltered(MaxCardsInExercise);
             }
 
             if (_cards.Count != 0)
             {
-                CurrentCard = _cards.ElementAtOrDefault(CurrentIndex);
-                MaxCardsInExercise = _cards.Count;
+                SetCardAndButtons();
             }
             else
             {
