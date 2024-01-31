@@ -10,7 +10,3 @@ Turning the card over, on the other hand, reveals the description, but it also m
 
 On the tags page it is possible to manage tags for cards grouping.
 All information is stored locally at the moment, using SQLite DB. 
-
-![image](https://github.com/KonstantinFinagin/LingvoCards/assets/2586700/b21c1e6b-33ac-40db-82f7-c6c73c1fb15e | width=300)
-![image](https://github.com/KonstantinFinagin/LingvoCards/assets/2586700/3ed9a304-2995-4c3c-a7b6-89d252a3bb49 | width=300)
-
