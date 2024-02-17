@@ -31,12 +31,7 @@
                 </Grid.ColumnDefinitions>
 
                 <Label VerticalOptions="Start" Grid.Column="0" Margin="5" Text="Description: " FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-                <Editor Grid.Column="1" 
-                        Placeholder="Description" 
-                        Text="{Binding Description, Mode=TwoWay}" 
-                        AutoSize="TextChanges"
-                        HeightRequest="80"/>
-                <!-- Adjusted height to roughly fit 3 lines of text -->
+                <Entry Grid.Column="1" Placeholder="Description" Text="{Binding Description, Mode=TwoWay}"/>
             </Grid>
 
             <!-- Created on, statistics? -->
@@ -87,14 +82,15 @@
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
-            <Button Grid.Column="0" 
+            <Button Grid.Column="0" Text="Dismiss" Margin="5" Command="{Binding DismissCommand}"/>
+
+            <Button Grid.Column="1" 
                     Text="Save" 
-                    Margin="0,0,5,0" 
+                    Margin="5" 
                     BackgroundColor="#4CAF50" 
                     TextColor="#FFFFFF" 
                     Command="{Binding SaveCardCommand}"/>
 
-            <Button Grid.Column="1" Text="Dismiss" Margin="5,0,0,0" Command="{Binding DismissCommand}"/>
 
         </Grid>
 
