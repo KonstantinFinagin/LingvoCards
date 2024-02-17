@@ -2,7 +2,6 @@
 using LingvoCards.Dal.Repositories;
 using LingvoCards.Dal;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Logging;
 
 namespace LingvoCards.App
 {
@@ -31,8 +30,8 @@ namespace LingvoCards.App
 
             // Register View Models
             builder.Services.AddScoped<CardsViewModel>();
-            builder.Services.AddScoped<CardTagViewModel>();
             builder.Services.AddScoped<TagViewModel>();
+            builder.Services.AddScoped<CardEditViewModel>();
             builder.Services.AddScoped<PracticeViewModel>();
 
 #if DEBUG

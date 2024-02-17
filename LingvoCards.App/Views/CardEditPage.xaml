@@ -7,50 +7,101 @@
              >
 
         <!-- Bottom Section: Inputs and Buttons -->
-        <VerticalStackLayout Spacing="10">
 
-            <Grid>
+    <Grid RowDefinitions="Auto, *, *, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
+
+        <!--Term and description -->
+        <Grid Grid.Row="0" RowDefinitions="Auto, Auto, Auto, Auto">
+
+            <Grid Grid.Row="0" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
                     <ColumnDefinition Width="*"></ColumnDefinition>
                 </Grid.ColumnDefinitions>
 
                 <Label Grid.Column="0" Margin="5" Text="Word: " FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-                <Entry Grid.Column="1" Placeholder="Word" Text="{Binding EditableTerm, Mode=TwoWay}"/>
+                <Entry Grid.Column="1" Placeholder="Word" Text="{Binding Term, Mode=TwoWay}"/>
 
             </Grid>
 
-            <Grid>
+            <Grid Grid.Row="1" Margin="5">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <Label Grid.Column="0" Margin="5" Text="Description: " FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-                <Entry Grid.Column="1" Placeholder="Description" Text="{Binding EditableDescription, Mode=TwoWay}"/>
-
-            </Grid>
-            <Grid>
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="100"/>
-                    <ColumnDefinition Width="*"></ColumnDefinition>
-                    <ColumnDefinition Width="Auto"></ColumnDefinition>
-                </Grid.ColumnDefinitions>
-
-                <Label Grid.Column="0" Margin="5" Text="Tags: " FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
-                <Entry Grid.Column="1" Placeholder="Tags" Text="{Binding SelectedCard.FormattedTags, Mode=OneWay}" />
-                <Button Grid.Column="2" Text="Select tags" Command="{Binding SelectTagsCommand}" IsVisible="{Binding IsCardSelected}" Margin="10,0,0,0"/>
-            </Grid>
-
-            <Grid>
-                <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
                 </Grid.ColumnDefinitions>
 
-                <Button Grid.Column="1" Text="Add new" Command="{Binding SaveCardCommand}" IsVisible="{Binding IsSaveCardVisible}" Margin="10,0,0,0"/>
+                <Label VerticalOptions="Start" Grid.Column="0" Margin="5" Text="Description: " FontSize="Micro" Opacity="0.6" VerticalTextAlignment="Center"/>
+                <Editor Grid.Column="1" 
+                        Placeholder="Description" 
+                        Text="{Binding Description, Mode=TwoWay}" 
+                        AutoSize="TextChanges"
+                        HeightRequest="80"/>
+                <!-- Adjusted height to roughly fit 3 lines of text -->
             </Grid>
 
-        </VerticalStackLayout>
+            <!-- Created on, statistics? -->
+
+        </Grid>
+
+        <!-- Card tags -->
+        <CollectionView 
+            Grid.Row="1"
+            x:Name="TagsCollectionView"
+            ItemsSource="{Binding AvailableTags}"
+            SelectionMode="None">
+
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="model:Tag">
+                    <Frame Padding="0" Margin="3" CornerRadius="3" BackgroundColor="Transparent" HasShadow="False">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="40"/>
+
+                            </Grid.ColumnDefinitions>
+
+                            <!-- Column borders -->
+                            <BoxView Grid.Column="0" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+                            <BoxView Grid.Column="1" WidthRequest="1" BackgroundColor="LightGray" HorizontalOptions="End"/>
+
+                            <!-- Header labels -->
+                            <Label Grid.Column="0" Text="{Binding Text}" VerticalTextAlignment="Center" Margin="10,0,10,0"/>
+                            <Label  Grid.Column="1" Text="{Binding IsDefaultText, Mode=OneWay}" VerticalTextAlignment="Center" Margin="10,0,10,0" IsEnabled="False"/>
+                            <CheckBox Grid.Column="2" IsChecked="{Binding IsSelected, Mode=TwoWay}"/>
+
+                        </Grid>
+
+                    </Frame>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+
+        </CollectionView>
+
+        <!-- Empty space -->
+
+        <!-- Buttons -->
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button Grid.Column="0" 
+                    Text="Save" 
+                    Margin="0,0,5,0" 
+                    BackgroundColor="#4CAF50" 
+                    TextColor="#FFFFFF" 
+                    Command="{Binding SaveCardCommand}"/>
+
+            <Button Grid.Column="1" Text="Dismiss" Margin="5,0,0,0" Command="{Binding DismissCommand}"/>
+
+        </Grid>
+
+
+    </Grid>
+
+
+
 
 </ContentPage>
