@@ -2,6 +2,7 @@
 using LingvoCards.Dal.Repositories;
 using LingvoCards.Dal;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
 
 namespace LingvoCards.App
 {
