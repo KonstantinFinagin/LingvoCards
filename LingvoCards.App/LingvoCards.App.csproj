@@ -73,9 +73,6 @@
 	  <Compile Update="Views\CardsPage.xaml.cs">
 	    <DependentUpon>CardsPage.xaml</DependentUpon>
 	  </Compile>
-	  <Compile Update="Views\CardTagPage.xaml.cs">
-	    <DependentUpon>CardTagPage.xaml</DependentUpon>
-	  </Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -86,9 +83,6 @@
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	  <MauiXaml Update="Views\CardsPage.xaml">
-	    <Generator>MSBuild:Compile</Generator>
-	  </MauiXaml>
-	  <MauiXaml Update="Views\CardTagPage.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </MauiXaml>
 	</ItemGroup>

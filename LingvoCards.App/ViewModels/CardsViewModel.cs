@@ -41,95 +41,40 @@ namespace LingvoCards.App.ViewModels
         
         partial void OnSelectedCardChanged(Card? value)
         {
-            EditableTerm = value?.Term ?? string.Empty;
-            EditableDescription = value?.Description ?? string.Empty;
-            UpdateButtonVisibility();
-        }
-
-
-        [ObservableProperty]
-        private string? _editableTerm;
-
-        partial void OnEditableTermChanged(string? value)
-        {
-            UpdateButtonVisibility();
+            IsCardSelected = value != null;
+            AddButtonText = value == null ? "Add new" : "View/Edit";
         }
 
         [ObservableProperty]
-        private string? _editableDescription;
-
-        partial void OnEditableDescriptionChanged(string? value)
-        {
-            UpdateButtonVisibility();
-        }
+        private string _addButtonText = "Add new";
 
         [ObservableProperty] 
         private string? _editableTags;
-        
-        [ObservableProperty]
-        private bool _isAddNewVisible;
-
-        [ObservableProperty]
-        private bool _isEditVisible;
 
         [ObservableProperty]
         private bool _isCardSelected;
-        
+
         [RelayCommand]
-        private void AddCard()
+        private void ClearSelection()
         {
-            // add new card
-            if(string.IsNullOrEmpty(EditableTerm) || string.IsNullOrEmpty(EditableDescription))
-            {
-                Shell.Current.CurrentPage.DisplayAlert("Error", "Term and description cannot be empty.", "Got it!");
-                return;
-            }
-
-            var card = new Card()
-            {
-                Id = Guid.NewGuid(),
-                CreatedOn = DateTime.Now,
-                Term = EditableTerm,
-                Description = EditableDescription,
-                Tags = _tagRepository.GetDefault()
-                // TODO tags
-            };
-
-            _cardRepository.Add(card);
-
-            _cardRepository.SaveChanges();
-
-            ReloadAllCards();
-            SelectedCard = Cards.FirstOrDefault(c => c.Id == card.Id);
+            SelectedCard = null;
         }
 
         [RelayCommand]
-        private void EditCard()
+        private async Task AddOrUpdateCard()
         {
-            if (SelectedCard == null) return;
+            var cardEditViewModel = _serviceProvider.GetService<CardEditViewModel>();
 
-            var card = _cardRepository.GetCard(SelectedCard.Id);
-            if (card == null) return;
+            cardEditViewModel!.ModalClosed += ReloadAllCards;
+            cardEditViewModel.InitializeWithSelectedCard(SelectedCard);
 
-            if (string.IsNullOrEmpty(EditableTerm) || string.IsNullOrEmpty(EditableDescription))
-            {
-                Shell.Current.CurrentPage.DisplayAlert("Error", "Term and description cannot be empty.", "Got it!");
-                return;
-            }
-
-            card.Term = EditableTerm ?? string.Empty;
-            card.Description = EditableDescription ?? string.Empty;
-
-            _cardRepository.SaveChanges();
-            ReloadAllCards();
-
-            SelectedCard = Cards.First(c => c.Id == card.Id);
+            var cardEditPage = new CardEditPage() { BindingContext = cardEditViewModel };
+            await Application.Current?.MainPage?.Navigation.PushModalAsync(cardEditPage)!;
         }
 
         [RelayCommand]
         private async Task DeleteCard()
         {
-
             if (SelectedCard == null)
             {
                 return;
@@ -145,71 +90,6 @@ namespace LingvoCards.App.ViewModels
             _cardRepository.SaveChanges();
             SelectedCard = null;
             ReloadAllCards();
-        }
-
-        [RelayCommand]
-        private async Task SelectTags()
-        {
-            var cardTagViewModel = _serviceProvider.GetService<CardTagViewModel>();
-            cardTagViewModel.ModalClosed += ReloadAllCards;
-            cardTagViewModel.InitializeWithSelectedCard(SelectedCard);
-
-
-            var tagSelectionPage = new CardTagPage() { BindingContext = cardTagViewModel };
-            await Application.Current.MainPage.Navigation.PushModalAsync(tagSelectionPage);
-        }
-
-        private void UpdateButtonVisibility()
-        {
-            var isCardSelected = SelectedCard != null;
-            var isTermFilled = !string.IsNullOrWhiteSpace(EditableTerm);
-            var isDescriptionFilled = !string.IsNullOrWhiteSpace(EditableDescription);
-
-            switch (isCardSelected, isTermFilled, isDescriptionFilled)
-            {
-                case (false, true, true): // card is not selected, but term and description are filled in - add new
-                {
-                    IsAddNewVisible = true;
-                    IsEditVisible = false;
-                    IsCardSelected = false;
-                    break;
-                }
-
-                case (false, false, _):  // card is not selected and some info is missing
-                case (false, _, false):
-                {
-                    IsAddNewVisible = false;
-                    IsEditVisible = false;
-                    IsCardSelected = false;
-                    break;
-                }
-
-                case (true, true, true): // card is selected, and both term and description are filled in - then  we show all buttons
-                {
-                    IsAddNewVisible = SelectedCard?.Term != EditableTerm || SelectedCard?.Description != EditableDescription && TagsAreTheSame();
-                    IsEditVisible = SelectedCard?.Term != EditableTerm || SelectedCard?.Description != EditableDescription && TagsAreTheSame();
-                    IsCardSelected = true;
-                    break;
-                }
-
-                case (true, false, _):  // card is selected and some info is missing
-                case (true, _, false):
-                {
-                    IsAddNewVisible = false;
-                    IsEditVisible = false;
-                    IsCardSelected = true;
-                    break;
-                }
-
-                default:
-                    break;
-            }
-        }
-
-        private bool TagsAreTheSame()
-        {
-            // TODO
-            return true;
         }
 
         private void ReloadAllCards()
