@@ -7,14 +7,14 @@ public class BaseRepository<T>(DbContext context) : IRepository<T>
 {
     protected readonly DbSet<T> DbSet = context.Set<T>();
 
-    public IEnumerable<T> GetAll()
+    public async Task<IEnumerable<T>> GetAllAsync()
     {
-        return DbSet.ToList();
+        return await DbSet.ToListAsync();
     }
 
-    public T? GetById(Guid id)
+    public async Task<T?> GetByIdAsync(Guid id)
     {
-        return DbSet.Find(id);
+        return await DbSet.FindAsync(id);
     }
 
     public void Add(T entity)
@@ -40,9 +40,9 @@ public class BaseRepository<T>(DbContext context) : IRepository<T>
         DbSet.Remove(entity);
     }
 
-    public void SaveChanges()
+    public async Task SaveChangesAsync()
     {
-        context.SaveChanges();
+        await context.SaveChangesAsync();
         context.ChangeTracker.Clear();
     }
 }

@@ -18,7 +18,7 @@ namespace LingvoCards.App.ViewModels
             _cardRepository = cardRepository;
             _tagRepository = tagRepository;
             _serviceProvider = serviceProvider;
-            ReloadAllCards();
+            ReloadAllCardsAsync().ConfigureAwait(false);
         }
 
         [ObservableProperty]
@@ -31,9 +31,33 @@ namespace LingvoCards.App.ViewModels
         [ObservableProperty]
         private string? _searchTerm;
 
+        // Field to hold a reference to the debounce task
+        private Task? _searchDebounceTask = null;
+
+        // The cancellation token source to cancel the previous task when a new character is typed
+        private CancellationTokenSource? _cts = null;
+
         partial void OnSearchTermChanged(string? value)
         {
-            PerformSearch();
+            // Cancel the previous task if it exists
+            if (_cts != null)
+            {
+                _cts.Cancel();
+                _cts.Dispose();
+            }
+
+            _cts = new CancellationTokenSource();
+            var token = _cts.Token;
+
+            // Replace the previous debounce task with a new one
+            _searchDebounceTask = Task.Delay(TimeSpan.FromSeconds(0.5), token).ContinueWith(async t =>
+            {
+                if (!t.IsCanceled)
+                {
+                    // Perform the search
+                    await PerformSearchAsync();
+                }
+            }, token, TaskContinuationOptions.None, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         [ObservableProperty]
@@ -65,15 +89,15 @@ namespace LingvoCards.App.ViewModels
         {
             var cardEditViewModel = _serviceProvider.GetService<CardEditViewModel>();
 
-            cardEditViewModel!.ModalClosed += ReloadAllCards;
-            cardEditViewModel.InitializeWithSelectedCard(SelectedCard);
+            cardEditViewModel!.ModalClosed += ReloadAllCardsAsync;
+            await cardEditViewModel.InitializeWithSelectedCardAsync(SelectedCard);
 
             var cardEditPage = new CardEditPage() { BindingContext = cardEditViewModel };
             await Application.Current?.MainPage?.Navigation.PushModalAsync(cardEditPage)!;
         }
 
         [RelayCommand]
-        private async Task DeleteCard()
+        private async Task DeleteCardAsync()
         {
             if (SelectedCard == null)
             {
@@ -87,23 +111,23 @@ namespace LingvoCards.App.ViewModels
             }
 
             _cardRepository.Remove(SelectedCard);
-            _cardRepository.SaveChanges();
+            await _cardRepository.SaveChangesAsync();
             SelectedCard = null;
-            ReloadAllCards();
+            await ReloadAllCardsAsync();
         }
 
-        private void ReloadAllCards()
+        private async Task ReloadAllCardsAsync()
         {
-            var allCards = _cardRepository.GetAll().OrderByDescending(c => c.CreatedOn);
+            var allCards = (await _cardRepository.GetAllAsync()).OrderByDescending(c => c.CreatedOn);
             Cards = new ObservableCollection<Card>(allCards);
             SelectedCard = Cards.FirstOrDefault(c => c.Id == SelectedCard?.Id);
         }
 
-        private void PerformSearch()
+        private async Task PerformSearchAsync()
         {
             Cards = string.IsNullOrEmpty(SearchTerm)
-                ? new ObservableCollection<Card>(_cardRepository.GetAll())
-                : new ObservableCollection<Card>(_cardRepository.GetByTermOrDescription(SearchTerm));
+                ? new ObservableCollection<Card>(await _cardRepository.GetAllAsync())
+                : new ObservableCollection<Card>(await _cardRepository.GetByTermOrDescriptionAsync(SearchTerm));
             
             SelectedCard = null;
         }

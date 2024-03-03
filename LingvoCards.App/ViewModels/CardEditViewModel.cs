@@ -17,9 +17,9 @@ public partial class CardEditViewModel : ObservableObject
         _tagRepository = tagRepository;
     }
 
-    public void InitializeWithSelectedCard(Card? selectedCard)
+    public async Task InitializeWithSelectedCardAsync(Card? selectedCard)
     {
-        LoadTags();
+        await LoadTagsAsync();
 
         if (selectedCard != null)
         {
@@ -37,6 +37,7 @@ public partial class CardEditViewModel : ObservableObject
         }
         else // selected card == null
         {
+            SelectedCard = null;
             foreach (var availableTag in AvailableTags)
             {
                 if (availableTag.IsDefault)
@@ -47,13 +48,13 @@ public partial class CardEditViewModel : ObservableObject
         }
     }
 
-    private void LoadTags()
+    private async Task LoadTagsAsync()
     {
-        var tags = _tagRepository.GetAll();
+        var tags = await _tagRepository.GetAllAsync();
         AvailableTags = new ObservableCollection<Tag>(tags);
     }
 
-    public event Action ModalClosed;
+    public event Func<Task> ModalClosed;
 
     [ObservableProperty]
     private Card? _selectedCard;
@@ -78,17 +79,15 @@ public partial class CardEditViewModel : ObservableObject
     {
         if (SelectedCard != null)
         {
-            await EditCard();
+            await EditCardAsync();
         }
         else
         {
-            await AddCard();
+            await AddCardAsync();
         }
-
-        await ReturnToCardsViewPage();
     }
 
-    private async Task AddCard()
+    private async Task AddCardAsync()
     {
         // add new card
         if (string.IsNullOrEmpty(Term) || string.IsNullOrEmpty(Description))
@@ -107,10 +106,12 @@ public partial class CardEditViewModel : ObservableObject
         };
 
         _cardRepository.Add(card);
-        _cardRepository.SaveChanges();
+        await _cardRepository.SaveChangesAsync();
+
+        await ReturnToCardsViewPage();
     }
 
-    private async Task EditCard()
+    private async Task EditCardAsync()
     {
         if (SelectedCard == null) return;
 
@@ -127,7 +128,9 @@ public partial class CardEditViewModel : ObservableObject
         card.Description = Description;
         card.Tags = AvailableTags.Where(t => t.IsSelected).ToList();
 
-        _cardRepository.SaveChanges();
+        await _cardRepository.SaveChangesAsync();
+
+        await ReturnToCardsViewPage();
     }
 
     private async Task ReturnToCardsViewPage()

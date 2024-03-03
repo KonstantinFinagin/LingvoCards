@@ -1,6 +1,5 @@
 ﻿using LingvoCards.Domain.Model;
 using Microsoft.EntityFrameworkCore;
-using static Microsoft.EntityFrameworkCore.DbLoggerCategory;
 
 namespace LingvoCards.Dal.Repositories;
 
@@ -10,12 +9,12 @@ public class CardRepository : BaseRepository<Card>
     {
     }
 
-    public new IEnumerable<Card> GetAll()
+    public new async Task<IEnumerable<Card>> GetAllAsync()
     {
-        return DbSet
+        return await DbSet
             .AsNoTracking()
             .Include(t => t.Tags)
-            .ToList();
+            .ToListAsync();
     }
 
     public Card? GetCard(Guid id)
@@ -23,16 +22,16 @@ public class CardRepository : BaseRepository<Card>
         return DbSet.Include(c => c.Tags).FirstOrDefault(c => c.Id == id);
     }
 
-    public List<Card> GetByTermOrDescription(string searchTerm)
+    public async Task<List<Card>> GetByTermOrDescriptionAsync(string searchTerm)
     {
-        return DbSet
+        return await DbSet
             .AsNoTracking()
             .Where(c => c.Term.Contains(searchTerm) || c.Description.Contains(searchTerm))
             .Include(t => t.Tags)
-            .ToList();
+            .ToListAsync();
     }
 
-    public List<Card> GetFiltered(Tag? selectedTag, ELevel selectedLevel, DateTime? dateFrom, DateTime? dateTo, int maxCardsInExercise)
+    public async Task<List<Card>> GetFilteredAsync(Tag? selectedTag, ELevel selectedLevel, DateTime? dateFrom, DateTime? dateTo, int maxCardsInExercise)
     {
         // Load the cards first (without tag filter)
         var cards = DbSet
@@ -47,15 +46,15 @@ public class CardRepository : BaseRepository<Card>
             cards = cards.Where(c => c.Tags.Any(t => t.Id == selectedTag.Id));
         }
 
-        return cards.ToList();
+        return await cards.ToListAsync();
     }
 
-    public List<Card> GetDefaultFiltered(int maxCardsInExercise)
+    public async Task<List<Card>> GetDefaultFilteredAsync(int maxCardsInExercise)
     {
         // Load the cards first (without tag filter)
-        return DbSet.AsNoTracking()
+        return await DbSet.AsNoTracking()
             .OrderBy(c => (double) c.SuccessCount / (c.FailureCount+1))
             .Take(maxCardsInExercise)
-            .ToList();
+            .ToListAsync();
     }
 }
