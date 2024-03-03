@@ -8,14 +8,14 @@ public class TagRepository : BaseRepository<Tag>
     public TagRepository(LearningCardContext context) : base(context)
     { }
 
-    public new IEnumerable<Tag> GetAll()
+    public new async Task<IEnumerable<Tag>> GetAllAsync()
     {
-        return DbSet
-            .ToList();
+        return await DbSet
+            .ToListAsync();
     }
 
-    public ICollection<Tag> GetDefault()
+    public async Task<ICollection<Tag>> GetDefaultAsync()
     {
-        return DbSet.Where(t => t.IsDefault).ToList();
+        return await DbSet.Where(t => t.IsDefault).ToListAsync();
     }
 }

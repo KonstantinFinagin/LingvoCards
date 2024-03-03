@@ -22,17 +22,17 @@ namespace LingvoCards.App.ViewModels
         public TagViewModel(TagRepository tagRepository)
         {
             _tagRepository = tagRepository;
-            LoadTags();
+            LoadTagsAsync().ConfigureAwait(false);
         }
 
-        private void LoadTags()
+        private async Task LoadTagsAsync()
         {
-            var tags = _tagRepository.GetAll();
+            var tags = await _tagRepository.GetAllAsync();
             AvailableTags = new ObservableCollection<Tag>(tags);
         }
 
         [RelayCommand]
-        private void AddTag()
+        private async Task AddTag()
         {
             if (string.IsNullOrEmpty(NewTagText))
             {
@@ -47,11 +47,11 @@ namespace LingvoCards.App.ViewModels
             };
 
             _tagRepository.Add(tag);
-            _tagRepository.SaveChanges();
+            await _tagRepository.SaveChangesAsync();
 
             NewTagText = string.Empty;
 
-            LoadTags();
+            await LoadTagsAsync();
         }
 
 
@@ -70,9 +70,9 @@ namespace LingvoCards.App.ViewModels
             }
 
             _tagRepository.Remove(SelectedTag);
-            _tagRepository.SaveChanges();
+            await _tagRepository.SaveChangesAsync();
 
-            LoadTags();
+            await LoadTagsAsync();
         }
 
 
@@ -90,9 +90,8 @@ namespace LingvoCards.App.ViewModels
                 _tagRepository.Update(availableTag);
             }
 
-            _tagRepository.SaveChanges();
-
-            LoadTags();
+            await _tagRepository.SaveChangesAsync();
+            await LoadTagsAsync();
         }
     }
 }

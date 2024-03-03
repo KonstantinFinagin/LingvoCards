@@ -16,7 +16,7 @@ namespace LingvoCards.App.ViewModels
             _cardRepository = cardRepository;
             _tagRepository = tagRepository;
 
-            _allTags = new ObservableCollection<Tag?>(tagRepository.GetAll().Append((Tag?)null));
+            _allTags = new ObservableCollection<Tag?>(tagRepository.GetAllAsync().GetAwaiter().GetResult().Append((Tag?)null))!;
         }
 
         [ObservableProperty]
@@ -74,22 +74,22 @@ namespace LingvoCards.App.ViewModels
 
         partial void OnSelectedLevelChanged(ELevel value)
         {
-            ReloadInternal();
+            ReloadInternalAsync().ConfigureAwait(false);
         }
 
         partial void OnSelectedTagChanged(Tag? value)
         {
-            ReloadInternal();
+            ReloadInternalAsync().ConfigureAwait(false);
         }
 
         partial void OnDateFromChanged(DateTime? value)
         {
-            ReloadInternal();
+            ReloadInternalAsync().ConfigureAwait(false);
         }
 
         partial void OnDateToChanged(DateTime? value)
         {
-            ReloadInternal();
+            ReloadInternalAsync().ConfigureAwait(false);
         }
 
         partial void OnCurrentCardChanged(Card? oldValue, Card? newValue)
@@ -132,10 +132,10 @@ namespace LingvoCards.App.ViewModels
         }
 
         [RelayCommand]
-        public void Reload()
+        public async Task Reload()
         {
             DefaultSearchParams();
-            ReloadInternal();
+            await ReloadInternalAsync();
         }
 
         private void DefaultSearchParams()
@@ -146,17 +146,17 @@ namespace LingvoCards.App.ViewModels
             SelectedLevel = ELevel.Bronze;
         }
 
-        private void ReloadInternal()
+        private async Task ReloadInternalAsync()
         {
             CurrentIndex = 0;
-            _cards = _cardRepository.GetFiltered(SelectedTag, SelectedLevel, DateFrom, DateTo, MaxCardsInExercise);
+            _cards = await _cardRepository.GetFilteredAsync(SelectedTag, SelectedLevel, DateFrom, DateTo, MaxCardsInExercise);
 
             if (_cards.Count == 0)
             {
                 // show alert that default cards will be shown
-                Shell.Current.CurrentPage.DisplayAlert("No cards", "No cards match search criteria. Loading defaults", "Got it!");
+                await Shell.Current.CurrentPage.DisplayAlert("No cards", "No cards match search criteria. Loading defaults", "Got it!");
                 DefaultSearchParams();
-                _cards = _cardRepository.GetDefaultFiltered(MaxCardsInExercise);
+                _cards = await _cardRepository.GetDefaultFilteredAsync(MaxCardsInExercise);
             }
 
             if (_cards.Count != 0)
@@ -170,28 +170,28 @@ namespace LingvoCards.App.ViewModels
         }
 
         [RelayCommand]
-        private void UpgradeLevel()
+        private async Task UpgradeLevelAsync()
         {
             if (CurrentCard == null) return;
             if(CurrentCard.Level != ELevel.Diamond) CurrentCard.Level++;
 
             CurrentCard.SuccessCount++;
             _cardRepository.Update(CurrentCard);
-            _cardRepository.SaveChanges();
+            await _cardRepository.SaveChangesAsync();
 
             CardLevel = CurrentCard.Level;
             CardLevelText = GetCardLevelText(CurrentCard);
         }
 
         [RelayCommand]
-        private void DropLevel()
+        private async Task DropLevelAsync()
         {
             if (CurrentCard == null || CurrentCard.Level == ELevel.Bronze) return;
             CurrentCard.Level = ELevel.Bronze;
 
             CurrentCard.FailureCount++;
             _cardRepository.Update(CurrentCard);
-            _cardRepository.SaveChanges();
+            await _cardRepository.SaveChangesAsync();
 
             CardLevel = CurrentCard.Level;
             CardLevelText = GetCardLevelText(CurrentCard);
