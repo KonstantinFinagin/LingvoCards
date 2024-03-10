@@ -131,5 +131,51 @@ namespace LingvoCards.App.ViewModels
             
             SelectedCard = null;
         }
+
+        #region Navigation
+
+        [ObservableProperty]
+        private int _currentPageNumber = 1;
+
+        [ObservableProperty]
+        private int _numberOfPages = 10;
+
+        [ObservableProperty]
+        private bool _canGoToPrevious;
+
+        [ObservableProperty]
+        private bool _canGoToNext = true; // TODO
+
+        partial void OnCurrentPageNumberChanged(int value)
+        {
+            CanGoToPrevious = value > 1;
+            CanGoToNext = value < NumberOfPages;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanGoToPrevious))]
+        private void GoToFirstPage()
+        {
+            CurrentPageNumber = 1;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanGoToPrevious))]
+        private void GoToPreviousPage()
+        {
+            CurrentPageNumber--;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanGoToNext))]
+        private void GoToNextPage()
+        {
+            CurrentPageNumber++;
+        }
+
+        [RelayCommand(CanExecute = nameof(CanGoToNext))]
+        private void GoToLastPage()
+        {
+            CurrentPageNumber = NumberOfPages;
+        }
+
+        #endregion Navigation
     }
 }

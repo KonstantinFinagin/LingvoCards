@@ -9,10 +9,11 @@
     <ContentPage.Resources>
         <ResourceDictionary>
             <converters:CardLevelToColorConverter x:Key="LevelToColor"/>
+            <converters:InvertBoolConverter x:Key="InvertBoolConverter" />
         </ResourceDictionary>
     </ContentPage.Resources>
 
-    <Grid RowDefinitions="Auto, *, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
+    <Grid RowDefinitions="Auto, *, Auto, Auto" RowSpacing="10" ColumnSpacing="10" Margin="5">
 
         <!-- CollectionView for Displaying Cards -->
         <SearchBar Grid.Row="0" Text="{Binding SearchTerm, Mode=TwoWay}"/>
@@ -27,7 +28,7 @@
 
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="model:Card">
-                    <Frame Padding="0" Margin="3" CornerRadius="3" BackgroundColor="Transparent" HasShadow="False" InputTransparent="True">
+                    <Frame Padding="0" Margin="1" CornerRadius="3" BackgroundColor="Transparent" HasShadow="False" InputTransparent="True">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="2*"/>
@@ -75,8 +76,51 @@
             </CollectionView.ItemTemplate>
         </CollectionView>
 
+        <!--Navigation pane -->
+        <Grid Grid.Row="2" ColumnDefinitions="Auto, 5, Auto, 5, *, 5, Auto, 5, Auto">
+            <!-- First page button -->
+            <Button Grid.Column="0"
+                    Text="&#171;"
+                    Command="{Binding GoToFirstPageCommand}"
+                    IsEnabled="{Binding CanGoToPrevious}" />
+
+            <!-- Previous page button -->
+            <Button Grid.Column="2"
+                    Text="&#8592;"
+                    Command="{Binding GoToPreviousPageCommand}"
+                    IsEnabled="{Binding CanGoToPrevious}" />
+
+            <!-- Composite Label Grid -->
+            <Grid Grid.Column="4"
+                  HorizontalOptions="Center"
+                  VerticalOptions="Center"
+                  Padding="10"
+                  ColumnDefinitions="Auto, Auto, Auto">
+
+                <Label Text="{Binding CurrentPageNumber}" />
+                <Label Grid.Column="1"
+                       Text="of"
+                       Margin="10,0,10,0"
+                       VerticalOptions="Center" />
+                <Label Grid.Column="2"
+                       Text="{Binding NumberOfPages}" />
+            </Grid>
+
+            <!-- Next page button -->
+            <Button Grid.Column="6"
+                    Text="&#8594;" 
+                    Command="{Binding GoToNextPageCommand}"
+                    IsEnabled="{Binding CanGoToNext}" />
+
+            <!-- Last page button -->
+            <Button Grid.Column="8"
+                    Text="&#187;"
+                    Command="{Binding GoToLastPageCommand}"
+                    IsEnabled="{Binding CanGoToNext}" />
+        </Grid>
+
         <!-- Bottom Section: Inputs and Buttons -->
-        <Grid Grid.Row="2">
+        <Grid Grid.Row="3">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="*"/>
